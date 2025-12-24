@@ -1,0 +1,160 @@
+"use client";
+
+import { HierarchySite } from "@/components/vector-draw/types";
+import { RefreshCw } from "lucide-react";
+
+type RasterHierarchySelectorProps = {
+  orgs: any[];
+  regionsByOrg: Record<number, any[]>;
+  categoriesByRegion: Record<number, any[]>;
+  subCatsByCategory: Record<number, any[]>;
+  sitesByCategory: Record<number, HierarchySite[]>;
+  sitesBySubCategory: Record<number, HierarchySite[]>;
+  selectedOrgId: number | null;
+  selectedRegionId: number | null;
+  selectedCategoryId: number | null;
+  selectedSubCategoryId: number | null;
+  selectedSiteId: number | null;
+  onChange: (level: "org" | "region" | "category" | "subCategory" | "site", id: number | null) => void;
+  loading?: boolean;
+};
+
+export function RasterHierarchySelector({
+  orgs,
+  regionsByOrg,
+  categoriesByRegion,
+  subCatsByCategory,
+  sitesByCategory,
+  sitesBySubCategory,
+  selectedOrgId,
+  selectedRegionId,
+  selectedCategoryId,
+  selectedSubCategoryId,
+  selectedSiteId,
+  onChange,
+  loading,
+}: RasterHierarchySelectorProps) {
+  const regions = selectedOrgId ? regionsByOrg[selectedOrgId] || [] : [];
+  const categories = selectedRegionId ? categoriesByRegion[selectedRegionId] || [] : [];
+  const subCats = selectedCategoryId ? subCatsByCategory[selectedCategoryId] || [] : [];
+  const sitesFromCat = selectedCategoryId ? sitesByCategory[selectedCategoryId] || [] : [];
+  const sitesFromSub = selectedSubCategoryId ? sitesBySubCategory[selectedSubCategoryId] || [] : [];
+  const requiresSubCat = subCats.length > 0;
+  const sites = requiresSubCat ? sitesFromSub : sitesFromCat;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-gray-900">Hierarchy</h3>
+        {loading && <RefreshCw className="w-4 h-4 animate-spin text-gray-500" />}
+      </div>
+
+      <SelectRow
+        label="Organization"
+        value={selectedOrgId}
+        options={orgs}
+        getLabel={(o) => o.name}
+        onChange={(id) => {
+          onChange("org", id);
+          onChange("region", null);
+          onChange("category", null);
+          onChange("subCategory", null);
+          onChange("site", null);
+        }}
+      />
+
+      <SelectRow
+        label="Region"
+        value={selectedRegionId}
+        options={regions}
+        getLabel={(r) => r.name}
+        onChange={(id) => {
+          onChange("region", id);
+          onChange("category", null);
+          onChange("subCategory", null);
+          onChange("site", null);
+        }}
+        disabled={!selectedOrgId}
+      />
+
+      <SelectRow
+        label="Category"
+        value={selectedCategoryId}
+        options={categories}
+        getLabel={(c) => c.name}
+        onChange={(id) => {
+          onChange("category", id);
+          onChange("subCategory", null);
+          onChange("site", null);
+        }}
+        disabled={!selectedRegionId}
+      />
+
+      <SelectRow
+        label="SubCategory"
+        value={selectedSubCategoryId}
+        options={subCats}
+        getLabel={(s) => s.name}
+        onChange={(id) => {
+          onChange("subCategory", id);
+          onChange("site", null);
+        }}
+        disabled={!selectedCategoryId}
+        optional={false}
+      />
+
+      <SelectRow
+        label="Site"
+        value={selectedSiteId}
+        options={sites}
+        getLabel={(s: HierarchySite) => `${s.name}${s.city ? ` - ${s.city}` : ""}`}
+        onChange={(id) => onChange("site", id)}
+        disabled={!selectedCategoryId || (requiresSubCat && !selectedSubCategoryId)}
+        placeholder={sites.length === 0 ? "No site available" : undefined}
+      />
+    </div>
+  );
+}
+
+type SelectRowProps<T> = {
+  label: string;
+  value: number | null;
+  options: T[];
+  getLabel: (item: T) => string;
+  onChange: (id: number | null) => void;
+  disabled?: boolean;
+  optional?: boolean;
+  placeholder?: string;
+};
+
+function SelectRow<T>({
+  label,
+  value,
+  options,
+  getLabel,
+  onChange,
+  disabled,
+  placeholder,
+}: SelectRowProps<T>) {
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-medium text-gray-700">{label}</span>
+        {disabled && <span className="text-[11px] text-gray-400">select above first</span>}
+      </div>
+      <select
+        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-green-900 focus:border-transparent disabled:bg-gray-100"
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+        disabled={disabled}
+      >
+        <option value="">{placeholder ?? `Choose ${label.toLowerCase()}`}</option>
+        {options.map((o: any) => (
+          <option key={o.id} value={o.id}>
+            {getLabel(o)}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}

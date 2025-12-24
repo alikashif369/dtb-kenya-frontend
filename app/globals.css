@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+html.dark {
+  color-scheme: dark;
+}
+@keyframes scroll-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Tailwind utility */
+.animate-scroll-x {
+  animation: scroll-x 25s linear infinite;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+@keyframes partnerSlide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-partnerSlide {
+  animation: partnerSlide 18s linear infinite;
+}
+ @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-scroll {
+          animation: scroll linear infinite 20s; /* adjust 20s to make it faster/slower */
+        }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Add this to your global CSS file (e.g., globals.css) */
+
+.hero-gradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* FIX: Using a brighter green (e.g., green-700/800 equivalent) with transparency */
+  /* This is close to the shade in the image, allowing the map detail through */
+  background-color: rgba(82, 119, 82, 0.5); /* Example: Forest Green at 75% opacity */
+  
+  z-index: 1; /* Below the content, above the map */
+}
+
+/* Alternative Tailwind Class Method (if not using MapLibreHero):
+If you were using a div for the overlay, you'd use:
+<div className="absolute inset-0 bg-green-700/75" />
+*/
