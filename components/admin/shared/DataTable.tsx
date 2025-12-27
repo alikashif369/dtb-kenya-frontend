@@ -29,6 +29,7 @@ interface DataTableProps<T> {
   actions?: (item: T) => ReactNode;
   onRowClick?: (item: T) => void;
   selectedKey?: string | number;
+  expandedRowRender?: (item: T) => ReactNode;
 }
 
 export default function DataTable<T>({
@@ -43,6 +44,7 @@ export default function DataTable<T>({
   actions,
   onRowClick,
   selectedKey,
+  expandedRowRender,
 }: DataTableProps<T>) {
   const handleSort = (key: string) => {
     if (!onSort) return;

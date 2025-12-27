@@ -1,0 +1,149 @@
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { AlertCircle, RefreshCw } from "lucide-react";
+import FilterRow from "./FilterRow";
+import DashboardMap from "./DashboardMap";
+import SummarySection from "./SummarySection";
+import { useDashboard } from "./hooks/useDashboard";
+
+export default function DashboardPage() {
+  const {
+    // State
+    filters,
+    hierarchy,
+    selectedSite,
+    yearlyMetrics,
+    aggregateMetrics,
+    boundaries,
+    photos,
+    species,
+    categoryType,
+
+    // Map state
+    showVectors,
+    showImagery,
+    showClassified,
+    selectedYear,
+    availableYears,
+    baseLayer,
+    baseRasterTileUrl,
+    classifiedRasterTileUrl,
+
+    // Loading states
+    loading,
+    error,
+
+    // Actions
+    setFilter,
+    setYear,
+    toggleVectors,
+    toggleImagery,
+    toggleClassified,
+    toggleBaseLayer,
+    selectSiteFromMap,
+    clearSiteSelection,
+    refresh,
+  } = useDashboard();
+
+  // Handle site click on map - updates all parent filters
+  const handleSiteClick = React.useCallback(
+    (siteId: number) => {
+      selectSiteFromMap(siteId, hierarchy);
+    },
+    [selectSiteFromMap, hierarchy]
+  );
+
+  // Filter boundaries based on current filter selection
+  const filteredBoundaries = React.useMemo(() => {
+    if (!boundaries.length) return [];
+
+    // If a specific site is selected, only show that site's boundary
+    if (filters.siteId !== null) {
+      return boundaries.filter((b) => b.siteId === filters.siteId);
+    }
+
+    // Otherwise, filter by hierarchy if filters are set
+    // For now, show all boundaries (filtering can be enhanced with category/region data)
+    return boundaries;
+  }, [boundaries, filters]);
+
+  return (
+    <div className="min-h-screen bg-stone-50">
+      {/* Error banner */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-50 border-b border-red-200 px-4 py-3"
+        >
+          <div className="max-w-[1920px] mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="w-5 h-5" />
+              <span className="text-sm font-medium">{error}</span>
+            </div>
+            <button
+              onClick={refresh}
+              className="flex items-center gap-1.5 text-sm text-red-700 hover:text-red-800 font-medium"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Filter row */}
+      <FilterRow
+        filters={filters}
+        hierarchy={hierarchy}
+        loading={loading.hierarchy}
+        onFilterChange={setFilter}
+      />
+
+      {/* Map section */}
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <DashboardMap
+          boundaries={filteredBoundaries}
+          selectedSiteId={filters.siteId}
+          showVectors={showVectors}
+          showImagery={showImagery}
+          showClassified={showClassified}
+          baseLayer={baseLayer}
+          selectedYear={selectedYear}
+          availableYears={availableYears}
+          baseRasterTileUrl={baseRasterTileUrl}
+          classifiedRasterTileUrl={classifiedRasterTileUrl}
+          onSiteClick={handleSiteClick}
+          onToggleVectors={toggleVectors}
+          onToggleImagery={toggleImagery}
+          onToggleClassified={toggleClassified}
+          onToggleBaseLayer={toggleBaseLayer}
+          onYearChange={setYear}
+          loading={loading.boundaries || loading.rasters}
+        />
+      </div>
+
+      {/* Summary section */}
+      <SummarySection
+        selectedSite={selectedSite}
+        yearlyMetrics={yearlyMetrics}
+        siteSpecies={species}
+        sitePhotos={photos}
+        aggregateMetrics={aggregateMetrics}
+        categoryType={categoryType}
+        loading={{
+          metrics: loading.metrics,
+          aggregateMetrics: loading.aggregateMetrics,
+          species: loading.species,
+          photos: loading.photos,
+        }}
+        onSiteClose={clearSiteSelection}
+      />
+
+      {/* Footer spacer */}
+      <div className="h-8" />
+    </div>
+  );
+}

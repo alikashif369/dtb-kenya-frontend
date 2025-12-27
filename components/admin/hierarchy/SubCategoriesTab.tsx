@@ -213,7 +213,7 @@ export default function SubCategoriesTab() {
           <div className="space-y-1">
             <div className="text-sm text-gray-900">{info.name}</div>
             {info.type && (
-              <Badge variant={TYPE_BADGE_VARIANTS[info.type]} size="sm">
+              <Badge variant={TYPE_BADGE_VARIANTS[info.type]}>
                 {getCategoryTypeLabel(info.type)}
               </Badge>
             )}

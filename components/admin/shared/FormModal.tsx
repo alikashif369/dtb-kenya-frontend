@@ -146,7 +146,7 @@ export function FormModalFooter({
 
 // Form field wrapper for consistent styling
 interface FormFieldProps {
-  label: string;
+  label: ReactNode;
   htmlFor?: string;
   required?: boolean;
   error?: string;

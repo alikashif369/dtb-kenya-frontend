@@ -188,10 +188,10 @@ export default function PlantationDataTab() {
       render: (item) => (
         <div className="flex flex-wrap gap-1">
           {item.species.slice(0, 3).map((sp) => (
-            <Badge key={sp} variant="default" size="sm">{sp}</Badge>
+            <Badge key={sp} variant="default">{sp}</Badge>
           ))}
           {item.species.length > 3 && (
-            <Badge variant="info" size="sm">+{item.species.length - 3}</Badge>
+            <Badge variant="info">+{item.species.length - 3}</Badge>
           )}
         </div>
       ),

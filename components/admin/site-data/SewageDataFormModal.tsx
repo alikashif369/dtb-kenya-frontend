@@ -54,7 +54,7 @@ export default function SewageDataFormModal({
 
   // Get efficiency level
   const getEfficiencyLevel = () => {
-    if (!recoveryRatio || recoveryRatio === '') return null;
+    if (recoveryRatio === '' || recoveryRatio === null || recoveryRatio === undefined) return null;
     const ratio = Number(recoveryRatio);
     if (ratio >= 80) return { level: 'Excellent', color: 'text-green-600 bg-green-50' };
     if (ratio >= 60) return { level: 'Good', color: 'text-blue-600 bg-blue-50' };
