@@ -12,8 +12,9 @@ import { VectorDrawSidebar } from "@/components/vector-draw/Sidebar";
 import { MapPanel } from "@/components/vector-draw/MapPanel";
 import { CreateHierarchyModal } from "@/components/vector-draw/CreateHierarchyModal";
 import { CreateSiteModal } from "@/components/vector-draw/CreateSiteModal";
+import { API_URL, getHeaders } from "@/lib/utils/apiConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+const API_BASE = API_URL;
 
 type CreateLevel = "org" | "region" | "category" | "subCategory" | null;
 type SiteContext = { categoryId: number | null; subCategoryId: number | null };
@@ -164,7 +165,6 @@ function VectorDrawPageInner() {
     const loadFeatures = async () => {
       setLoadingLayers(true);
       try {
-        const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
         const boundariesUrl = `${API_BASE}/vectors?siteId=${selectedSiteId}&year=${year}`;
         const rastersUrl = `${API_BASE}/rasters?siteId=${selectedSiteId}&year=${year}`;
 
@@ -174,10 +174,10 @@ function VectorDrawPageInner() {
 
         const [boundRes, rasterRes] = await Promise.all([
           fetch(boundariesUrl, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: getHeaders(),
           }),
           fetch(rastersUrl, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: getHeaders(),
           }),
         ]);
 
@@ -290,17 +290,12 @@ function VectorDrawPageInner() {
     setSaving(true);
     setStatus(null);
     try {
-      const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-
       // If there is already a boundary for this site/year, PATCH the existing one
       if (existingVectorId) {
         console.log("[SAVE] Existing boundary found, updating id:", existingVectorId);
         const res = await fetch(`${API_BASE}/vectors/${existingVectorId}`, {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getHeaders(),
           body: JSON.stringify({ geometry: polygonData.feature.geometry, properties: { source: "drawing" } }),
         });
         if (!res.ok) {
@@ -331,10 +326,7 @@ function VectorDrawPageInner() {
         console.log("[SAVE] No existing boundary, creating new one. POST URL:", `${API_BASE}/vectors`);
         const res = await fetch(`${API_BASE}/vectors`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getHeaders(),
           body: JSON.stringify({
             siteId: selectedSiteId,
             year,

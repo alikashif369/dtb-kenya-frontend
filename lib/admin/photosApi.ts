@@ -1,23 +1,6 @@
 // API functions for Photos management
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-
-function getHeaders() {
-  const headers: Record<string, string> = {};
-  if (ACCESS_TOKEN) {
-    headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
-  }
-  return headers;
-}
-
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-    throw new Error(error.message || `HTTP error ${response.status}`);
-  }
-  return response.json();
-}
+import { API_URL, getHeaders, getMultipartHeaders, handleResponse } from '../utils/apiConfig';
 
 // ============================================================================
 // Types
@@ -127,12 +110,10 @@ export async function uploadPhoto(data: UploadPhotoData): Promise<Photo> {
     formData.append('tags', data.tags.join(','));
   }
 
-  const headers = getHeaders();
-  // Don't set Content-Type for FormData - browser will set it with boundary
-
+  // Use multipart headers (no Content-Type - browser sets it for FormData)
   const response = await fetch(`${API_URL}/photos/upload`, {
     method: 'POST',
-    headers,
+    headers: getMultipartHeaders(),
     body: formData,
   });
   return handleResponse<Photo>(response);

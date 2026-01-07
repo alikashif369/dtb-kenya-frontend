@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AOSInit from "@/components/AOSInit";
 import Navbar from "@/components/Navbar";
+import Providers from "@/components/Providers";
 
 // Font configurations
 const inter = Inter({
@@ -35,13 +36,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* OpenLayers will handle its own CSS imports */}
       </head>
       <body className="font-sans antialiased">
-        <AOSInit />
-        <Navbar />
+        <Providers>
+          <AOSInit />
+          <Navbar />
 
-        {/* Push page content below fixed navbar */}
-        <div className="pt-20">
-          {children}
-        </div>
+          {/* Push page content below fixed navbar */}
+          <div className="pt-20">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

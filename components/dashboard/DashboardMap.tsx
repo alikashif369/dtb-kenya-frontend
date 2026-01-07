@@ -163,8 +163,8 @@ export default function DashboardMap({
 
     const satelliteLayer = new TileLayer({
       source: new XYZ({
-        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        maxZoom: 19,
+        url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        maxZoom: 20,
         crossOrigin: "anonymous",
       }),
       zIndex: 0,

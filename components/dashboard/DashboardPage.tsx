@@ -47,6 +47,10 @@ export default function DashboardPage() {
     refresh,
   } = useDashboard();
 
+  // Debug logging
+  console.log('>>> DashboardPage - photos from useDashboard:', photos);
+  console.log('>>> DashboardPage - photos length:', photos.length);
+
   // Handle site click on map - updates all parent filters
   const handleSiteClick = React.useCallback(
     (siteId: number) => {

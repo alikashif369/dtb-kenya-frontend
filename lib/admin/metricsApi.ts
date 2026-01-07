@@ -1,8 +1,8 @@
 import { AggregateMetric, MetricFilters, MetricFormData } from './types';
 import { handleApiError } from '../utils/errorHandler';
+import { API_URL, getHeaders, getAuthToken } from '../utils/apiConfig';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+const API_BASE = API_URL;
 
 /**
  * Create a new aggregate metric
@@ -50,10 +50,7 @@ export async function createMetric(data: MetricFormData): Promise<AggregateMetri
 
   const res = await fetch(`${API_BASE}/aggregate-metrics`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -78,9 +75,7 @@ export async function listMetrics(filters: MetricFilters = {}): Promise<Aggregat
   const url = `${API_BASE}/aggregate-metrics${params.toString() ? `?${params}` : ''}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -96,9 +91,7 @@ export async function listMetrics(filters: MetricFilters = {}): Promise<Aggregat
  */
 export async function getMetric(id: number): Promise<AggregateMetric> {
   const res = await fetch(`${API_BASE}/aggregate-metrics/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -155,10 +148,7 @@ export async function updateMetric(id: number, data: MetricFormData): Promise<Ag
 
   const res = await fetch(`${API_BASE}/aggregate-metrics/${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -176,9 +166,7 @@ export async function updateMetric(id: number, data: MetricFormData): Promise<Ag
 export async function deleteMetric(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/aggregate-metrics/${id}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -197,9 +185,7 @@ export async function getMetricsGrouped(entityType?: string): Promise<any> {
   const url = `${API_BASE}/aggregate-metrics/grouped${params.toString() ? `?${params}` : ''}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {

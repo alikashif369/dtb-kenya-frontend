@@ -4,7 +4,8 @@ import { useState, ReactNode } from 'react';
 import AdminSidebar from './AdminSidebar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ToastContext';
-import { Bell, User, Search } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Bell, User, Search, LogOut, Shield, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 interface AdminLayoutProps {
@@ -15,6 +16,8 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title, description }: AdminLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, logout, isSuperAdmin, isLoading } = useAuth();
 
   return (
     <ErrorBoundary>
@@ -61,15 +64,72 @@ export default function AdminLayout({ children, title, description }: AdminLayou
                 </button>
 
                 {/* User Menu */}
-                <Link
-                  href="/admin/profile"
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition"
-                >
-                  <div className="w-8 h-8 bg-green-900 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700 hidden lg:block">Admin</span>
-                </Link>
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition"
+                  >
+                    <div className="w-8 h-8 bg-green-900 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="hidden lg:block text-left">
+                      <span className="text-sm font-medium text-gray-700 block">
+                        {isLoading ? '...' : user?.name || 'Admin'}
+                      </span>
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        {isSuperAdmin ? (
+                          <>
+                            <ShieldCheck className="w-3 h-3" />
+                            Super Admin
+                          </>
+                        ) : (
+                          <>
+                            <Shield className="w-3 h-3" />
+                            Admin
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {showUserMenu && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowUserMenu(false)}
+                      />
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {user?.name}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {user?.email}
+                          </p>
+                        </div>
+                        <Link
+                          href="/admin/profile"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <User className="w-4 h-4" />
+                          Profile
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            logout();
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </header>
 

@@ -1,27 +1,6 @@
 // API functions for hierarchy management (Organizations, Regions, Categories, SubCategories, Sites)
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-
-// Common headers
-function getHeaders() {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (ACCESS_TOKEN) {
-    headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
-  }
-  return headers;
-}
-
-// Error handler
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-    throw new Error(error.message || `HTTP error ${response.status}`);
-  }
-  return response.json();
-}
+import { API_URL, getHeaders, handleResponse } from '../utils/apiConfig';
 
 // ============================================================================
 // Types

@@ -47,6 +47,10 @@ export default function SummarySection({
   loading,
   onSiteClose,
 }: SummarySectionProps) {
+  // Debug logging
+  console.log('>>> SummarySection received sitePhotos:', sitePhotos);
+  console.log('>>> SummarySection sitePhotos length:', sitePhotos.length);
+  
   const hasSingleSite = selectedSite !== null;
 
   return (

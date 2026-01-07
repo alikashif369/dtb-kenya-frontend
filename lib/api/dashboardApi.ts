@@ -13,30 +13,7 @@ import type {
   CategoryType,
 } from '@/components/dashboard/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-
-// ============================================================================
-// Common Utilities
-// ============================================================================
-
-function getHeaders(): Record<string, string> {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (ACCESS_TOKEN) {
-    headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
-  }
-  return headers;
-}
-
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-    throw new Error(error.message || `HTTP error ${response.status}`);
-  }
-  return response.json();
-}
+import { API_URL, getHeaders, handleResponse } from '../utils/apiConfig';
 
 // ============================================================================
 // Hierarchy API
@@ -241,6 +218,7 @@ export async function getPhotos(filters?: {
 
   const response = await fetch(`${API_URL}/photos?${params.toString()}`, {
     headers: getHeaders(),
+    cache: 'no-store', // Disable caching for photos
   });
   return handleResponse<Photo[]>(response);
 }

@@ -1,8 +1,8 @@
 import { RasterResponse, RasterFilters } from './types';
 import { handleApiError } from '../utils/errorHandler';
+import { API_URL, getHeaders, getMultipartHeaders } from '../utils/apiConfig';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+const API_BASE = API_URL;
 
 /**
  * Upload a GeoTIFF raster file to a site
@@ -20,9 +20,7 @@ export async function uploadRaster(
     `${API_BASE}/rasters/upload?siteId=${siteId}&year=${year}&isClassified=${isClassified}`,
     {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getMultipartHeaders(),
       body: formData,
     }
   );
@@ -48,9 +46,7 @@ export async function listRasters(filters: RasterFilters = {}): Promise<RasterRe
   const url = `${API_BASE}/rasters${params.toString() ? `?${params}` : ''}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -66,9 +62,7 @@ export async function listRasters(filters: RasterFilters = {}): Promise<RasterRe
  */
 export async function getRasterMetadata(id: number): Promise<RasterResponse> {
   const res = await fetch(`${API_BASE}/rasters/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -85,9 +79,7 @@ export async function getRasterMetadata(id: number): Promise<RasterResponse> {
 export async function refreshRasterMetadata(id: number): Promise<RasterResponse> {
   const res = await fetch(`${API_BASE}/rasters/${id}/refresh-metadata`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -104,9 +96,7 @@ export async function refreshRasterMetadata(id: number): Promise<RasterResponse>
 export async function deleteRaster(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/rasters/${id}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {

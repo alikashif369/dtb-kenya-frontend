@@ -188,8 +188,16 @@ export default function YearlyMetricsFormModal({
 
   // Handle submit
   const handleSubmit = async () => {
-    if (!validate()) return;
+    console.log('handleSubmit called');
+    console.log('formData:', formData);
+    
+    if (!validate()) {
+      console.log('Validation failed - showing error toast');
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
 
+    console.log('Validation passed, submitting...');
     setLoading(true);
     try {
       // Clean up undefined values
@@ -391,7 +399,9 @@ export default function YearlyMetricsFormModal({
           </div>
 
           {errors.landCover && (
-            <p className="text-sm text-red-600">{errors.landCover}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-sm text-red-700 font-medium">{errors.landCover}</p>
+            </div>
           )}
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">

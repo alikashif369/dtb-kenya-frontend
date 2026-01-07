@@ -4,8 +4,9 @@ import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { HierarchySite } from "./types";
 import { handleApiError, formatErrorMessage } from "../../lib/utils/errorHandler";
+import { API_URL, getHeaders } from "../../lib/utils/apiConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+const API_BASE = API_URL;
 
 type SiteContext = { categoryId: number | null; subCategoryId: number | null };
 
@@ -68,13 +69,9 @@ export function CreateSiteModal({ open, context, onClose, onCreated }: Props) {
         siteType: form.siteType,
         infrastructure: form.infrastructure || undefined,
       };
-      const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
       const res = await fetch(`${API_BASE}/sites`, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: getHeaders(),
         body: JSON.stringify(payload),
       });
       if (!res.ok) {

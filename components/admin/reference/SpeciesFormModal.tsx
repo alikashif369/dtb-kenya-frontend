@@ -129,8 +129,16 @@ export default function SpeciesFormModal({
 
   // Handle submit
   const handleSubmit = async () => {
-    if (!validate()) return;
+    console.log('handleSubmit called');
+    console.log('formData:', formData);
+    
+    if (!validate()) {
+      console.log('Validation failed - showing error toast');
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
 
+    console.log('Validation passed, submitting...');
     setLoading(true);
     try {
       const submitData = {

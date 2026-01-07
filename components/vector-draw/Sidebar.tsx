@@ -7,8 +7,9 @@ import { HierarchySelector } from "./HierarchySelector";
 import { SiteDetailsCard } from "./SiteDetailsCard";
 import { HierarchySite } from "./types";
 import { handleApiError, formatErrorMessage } from "../../lib/utils/errorHandler";
+import { API_URL, getHeaders } from "../../lib/utils/apiConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+const API_BASE = API_URL;
 
 type HierarchyLevel = "org" | "region" | "category" | "subCategory" | "site";
 
@@ -167,36 +168,63 @@ export function VectorDrawSidebar({
       onUploadSuccess(geojson);
       showToast(`Loaded ${geojson.features.length} feature(s). Uploading to server...`, "success");
 
-      // POST to backend - send only the geometry of the first feature (not FeatureCollection)
-      const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+      // Check if a vector already exists for this site/year
       const firstGeometry = geojson.features[0]?.geometry;
       if (!firstGeometry) {
         throw new Error('No geometry found in uploaded file');
       }
-      const uploadPayload = {
-        siteId: selectedSiteId,
-        year: year,
-        geometry: firstGeometry,
-        properties: {
-          source: "upload",
-          filename: fileToUse.name,
-          uploadedAt: new Date().toISOString(),
-        },
-      };
 
-      console.log("[UPLOAD] Upload payload:", uploadPayload);
-      console.log("[UPLOAD] API Base URL:", API_BASE);
-      console.log("[UPLOAD] POST URL:", `${API_BASE}/vectors`);
-      console.log("[UPLOAD] Token present:", !!token);
-
-      const res = await fetch(`${API_BASE}/vectors`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(uploadPayload),
+      console.log("[UPLOAD] Checking for existing vector...");
+      const checkRes = await fetch(`${API_BASE}/vectors?siteId=${selectedSiteId}&year=${year}`, {
+        headers: getHeaders(),
       });
+
+      let existingVectorId: string | null = null;
+      if (checkRes.ok) {
+        const existingVectors = await checkRes.json();
+        if (Array.isArray(existingVectors) && existingVectors.length > 0) {
+          existingVectorId = existingVectors[0].id;
+          console.log("[UPLOAD] Found existing vector ID:", existingVectorId);
+        }
+      }
+
+      let res: Response;
+      if (existingVectorId) {
+        // PATCH existing vector
+        console.log("[UPLOAD] Updating existing vector:", existingVectorId);
+        res = await fetch(`${API_BASE}/vectors/${existingVectorId}`, {
+          method: "PATCH",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            geometry: firstGeometry,
+            properties: {
+              source: "upload",
+              filename: fileToUse.name,
+              uploadedAt: new Date().toISOString(),
+            },
+          }),
+        });
+      } else {
+        // POST new vector
+        const uploadPayload = {
+          siteId: selectedSiteId,
+          year: year,
+          geometry: firstGeometry,
+          properties: {
+            source: "upload",
+            filename: fileToUse.name,
+            uploadedAt: new Date().toISOString(),
+          },
+        };
+
+        console.log("[UPLOAD] Creating new vector");
+        console.log("[UPLOAD] Upload payload:", uploadPayload);
+        res = await fetch(`${API_BASE}/vectors`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify(uploadPayload),
+        });
+      }
 
       console.log("[UPLOAD] Response status:", res.status, res.statusText);
 
@@ -211,7 +239,8 @@ export function VectorDrawSidebar({
       console.log("[UPLOAD] Saved data from API:", savedData);
 
       // Show success message
-      showToast(`${geojson.features.length} feature(s) uploaded and saved successfully!`, "success");
+      const action = existingVectorId ? "updated" : "created";
+      showToast(`Boundary ${action} successfully!`, "success");
 
       // Notify parent about saved boundary so it can update vectorFeatures
       onUploadSaved?.(savedData);

@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { HierarchySite } from "./types";
+import { API_URL, getHeaders } from "../../lib/utils/apiConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+const API_BASE = API_URL;
 
 type OrgNode = any;
 
@@ -119,16 +120,11 @@ export function useHierarchy(): UseHierarchyResult {
     setLoading(true);
     setError(null);
     try {
-      const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
       const url = `${API_BASE}/hierarchy/tree`;
       console.log("[HIERARCHY] API URL:", url);
-      console.log("[HIERARCHY] Token present:", !!token);
-      console.log("[HIERARCHY] Token value (first 20 chars):", token?.slice(0, 20) || "NO_TOKEN");
-      
+
       const res = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: getHeaders(),
       });
       
       console.log("[HIERARCHY] Response status:", res.status, res.statusText);

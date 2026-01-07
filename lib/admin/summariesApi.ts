@@ -1,8 +1,8 @@
 import { CategorySummary, SummaryFilters, SummaryFormData } from './types';
 import { handleApiError } from '../utils/errorHandler';
+import { API_URL, getHeaders } from '../utils/apiConfig';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+const API_BASE = API_URL;
 
 /**
  * Create a new category summary
@@ -28,10 +28,7 @@ export async function createSummary(data: SummaryFormData): Promise<CategorySumm
 
   const res = await fetch(`${API_BASE}/category-summaries`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -56,9 +53,7 @@ export async function listSummaries(filters: SummaryFilters = {}): Promise<Categ
   const url = `${API_BASE}/category-summaries${params.toString() ? `?${params}` : ''}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -74,9 +69,7 @@ export async function listSummaries(filters: SummaryFilters = {}): Promise<Categ
  */
 export async function getSummary(id: number): Promise<CategorySummary> {
   const res = await fetch(`${API_BASE}/category-summaries/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -111,10 +104,7 @@ export async function updateSummary(id: number, data: SummaryFormData): Promise<
 
   const res = await fetch(`${API_BASE}/category-summaries/${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
     body: JSON.stringify(payload),
   });
 
@@ -132,9 +122,7 @@ export async function updateSummary(id: number, data: SummaryFormData): Promise<
 export async function deleteSummary(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/category-summaries/${id}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
   });
 
   if (!res.ok) {

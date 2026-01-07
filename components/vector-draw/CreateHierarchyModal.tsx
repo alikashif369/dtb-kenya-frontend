@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { handleApiError, formatErrorMessage } from "../../lib/utils/errorHandler";
+import { API_URL, getHeaders } from "../../lib/utils/apiConfig";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+const API_BASE = API_URL;
 
 type CreateLevel = "org" | "region" | "category" | "subCategory";
 
@@ -66,13 +67,9 @@ export function CreateHierarchyModal({ level, context, onClose, onCreated }: Pro
         body.categoryId = context.categoryId;
       }
 
-      const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
       const res = await fetch(url, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: getHeaders(),
         body: JSON.stringify(body),
       });
       if (!res.ok) {

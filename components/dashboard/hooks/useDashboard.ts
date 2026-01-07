@@ -190,6 +190,7 @@ export function useDashboard(): UseDashboardReturn {
     }
 
     async function loadSiteData() {
+      console.log('=== loadSiteData called for siteId:', filters.siteId);
       try {
         setLoading((prev) => ({
           ...prev,
@@ -215,14 +216,18 @@ export function useDashboard(): UseDashboardReturn {
 
         // Load photos
         const sitePhotos = await getPhotos({ siteId: filters.siteId! });
+        console.log('Photos fetched from API:', sitePhotos);
+        console.log('Species photos:', sitePhotos.filter(p => p.category === 'SPECIES'));
         setPhotos(sitePhotos);
 
         // Load species (gracefully handle if endpoint doesn't exist)
         try {
+          console.log('Fetching species for site:', filters.siteId);
           const siteSpecies = await getSiteSpecies(filters.siteId!);
+          console.log('Species data received:', siteSpecies);
           setSpecies(siteSpecies);
         } catch (speciesError) {
-          console.warn("Failed to load species (endpoint may not exist):", speciesError);
+          console.error("Failed to load species:", speciesError);
           setSpecies([]);
         }
 

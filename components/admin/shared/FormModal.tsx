@@ -126,7 +126,12 @@ export function FormModalFooter({
       {onSubmit && (
         <button
           type="button"
-          onClick={onSubmit}
+          onClick={(e) => {
+            console.log('Save button clicked, event:', e);
+            console.log('Button disabled?', loading || disabled);
+            console.log('onSubmit function exists?', typeof onSubmit);
+            onSubmit();
+          }}
           disabled={loading || disabled}
           className={`
             rounded-lg px-4 py-2 text-sm font-medium text-white transition disabled:opacity-50 inline-flex items-center gap-2
