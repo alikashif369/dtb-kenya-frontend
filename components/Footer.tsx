@@ -1,96 +1,77 @@
 "use client";
 import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaLeaf, FaMapMarkerAlt, FaEnvelope, FaPhone, FaPaperPlane, FaChevronRight } from "react-icons/fa";
+import Link from "next/link";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-[#0D1815] text-white py-20 border-t border-white/5 font-sans">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                
-                {/* Brand Column */}
-                <div className="space-y-6">
-                    <div>
-                        <h2 className="text-2xl font-serif font-bold tracking-wide">SERENA GREEN</h2>
-                        <span className="text-serena-gold text-[10px] uppercase tracking-[0.3em] font-medium block mt-1">Conservation</span>
-                    </div>
-                    <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-                        Pioneering sustainable tourism through responsible stewardship, community engagement, and environmental innovation.
-                    </p>
-                    <div className="flex gap-4">
-                        {[FaFacebook, FaTwitter, FaInstagram, FaLinkedin].map((Icon, i) => (
-                            <a key={i} href="#" className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:bg-serena-gold hover:text-green-950 hover:border-serena-gold transition-all duration-300">
-                                <Icon className="w-4 h-4" />
-                            </a>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Explore */}
-                <div>
-                     <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white mb-6">Explore</h3>
-                     <ul className="space-y-4 text-gray-400 text-sm">
-                        {["Home", "Our Initiatives", "Impact Statistics", "Biodiversity", "Gallery"].map(item => (
-                            <li key={item}>
-                                <a href="#" className="hover:text-serena-gold transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 bg-serena-gold rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
-                     </ul>
-                </div>
-
-                {/* Contact */}
-                <div>
-                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white mb-6">Contact</h3>
-                    <ul className="space-y-4 text-gray-400 text-sm">
-                        <li className="flex items-start gap-3">
-                            <FaMapMarkerAlt className="mt-1 text-serena-gold" />
-                            <span>Serena Hotels,<br/>Islamabad, Pakistan</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                            <FaPhone className="text-serena-gold" />
-                            <span>+92 51 287 6161</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                            <FaEnvelope className="text-serena-gold" />
-                            <a href="mailto:green@serenahotels.com" className="hover:text-white transition-colors">green@serenahotels.com</a>
-                        </li>
-                    </ul>
-                </div>
-
-                {/* Newsletter */}
-                <div>
-                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-white mb-6">Newsletter</h3>
-                    <p className="text-gray-400 text-xs mb-4">
-                        Join our community of eco-conscious travelers.
-                    </p>
-                    <form className="flex flex-col gap-3">
-                        <input 
-                            type="email" 
-                            placeholder="Email Address" 
-                            className="bg-white/5 border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:border-serena-gold transition-colors"
-                        />
-                        <button className="bg-serena-gold text-green-950 px-4 py-3 text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
+    <footer className="bg-[#0b1210] text-gray-400 font-sans border-t border-white/5 text-sm">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          
+          {/* Brand & Socials */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-serif text-white tracking-wide">SERENA<span className="text-serena-gold">.</span></h2>
+            <p className="leading-relaxed max-w-xs text-xs">
+              Pioneering sustainable tourism and environmental stewardship across the region.
+            </p>
+            <div className="flex gap-4 pt-2">
+               {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
+                  <a key={i} href="#" className="hover:text-serena-gold transition-colors">
+                    <Icon size={16} />
+                  </a>
+               ))}
             </div>
+          </div>
 
-            {/* Bottom Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-8 text-xs text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-2 mb-4 md:mb-0">
-                    <FaLeaf className="text-serena-gold" />
-                    <span>© 2025 Serena Green. All Rights Reserved.</span>
-                </div>
-                <div className="flex gap-6">
-                    <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms of Use</a>
-                </div>
+          {/* Company Links */}
+          <div>
+            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Company</h3>
+             <ul className="space-y-2">
+              {["Our Mission", "Initiatives", "Partners", "Careers"].map((link) => (
+                <li key={link}><Link href="#" className="hover:text-serena-gold transition-colors">{link}</Link></li>
+              ))}
+             </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Contact</h3>
+             <ul className="space-y-2">
+              <li>Islamabad, Pakistan</li>
+              <li>+92 51 287 6161</li>
+              <li><a href="mailto:green@serenahotels.com" className="hover:text-serena-gold transition-colors">green@serenahotels.com</a></li>
+             </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Newsletter</h3>
+            <p className="text-xs mb-4">Latest updates on our green initiatives.</p>
+            <div className="flex border-b border-white/20 pb-1 focus-within:border-serena-gold transition-colors">
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                className="bg-transparent w-full outline-none text-white placeholder:text-gray-600 pb-1 text-xs"
+              />
+              <button className="text-serena-gold hover:text-white transition-colors">
+                <ArrowRight size={14} />
+              </button>
             </div>
+          </div>
+
         </div>
+
+        {/* Copyright */}
+        <div className="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
+           <p>© 2026 Serena Green. All Rights Reserved.</p>
+           <div className="flex gap-6 mt-2 md:mt-0">
+             <Link href="#" className="hover:text-gray-400">Privacy Policy</Link>
+             <Link href="#" className="hover:text-gray-400">Terms of Use</Link>
+           </div>
+        </div>
+      </div>
     </footer>
   );
 }

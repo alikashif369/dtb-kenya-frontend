@@ -1,50 +1,71 @@
 "use client";
-import Image from "next/image";
 
-export default function PartnersSlider() {
-  const partners = [
-    { id: 1, logoUrl: "/partners/wwf.png" },
-    { id: 2, logoUrl: "/partners/akrsp.jpg" },
-    { id: 3, logoUrl: "/partners/nust.jpg" },
-    { id: 4, logoUrl: "/partners/weclean.jpg" },
+import Image from "next/image";
+import { motion } from "framer-motion";
+
+interface Partner {
+  id: number;
+  name?: string;
+  logoUrl: string;
+}
+
+interface PartnersSliderProps {
+  partners?: Partner[];
+}
+
+export default function PartnersSlider({ partners = [] }: PartnersSliderProps) {
+  // Fallback data if no props provided
+  const defaultPartners = [
+    { id: 101, name: "WWF", logoUrl: "/partners/wwf.png" },
+    { id: 102, name: "AKRSP", logoUrl: "/partners/akrsp.jpg" },
+    { id: 103, name: "NUST", logoUrl: "/partners/nust.jpg" },
+    { id: 104, name: "WeClean", logoUrl: "/partners/weclean.jpg" },
+    { id: 105, name: "Ministry of Climate Change", logoUrl: "/logos/logo3.png" }, // Added to ensure length
   ];
 
-  // Duplicate array for seamless infinite scroll
-  const sliderItems = [...partners, ...partners, ...partners];
+  const displayPartners = partners.length > 0 ? partners : defaultPartners;
+  
+  // Tripling the array to ensure smooth seamless looping even on wide screens
+  const marqueePartners = [...displayPartners, ...displayPartners, ...displayPartners, ...displayPartners];
 
   return (
-    <section id="partners" className="py-16 bg-gray-100 relative">
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-green-700">
-          Our Partners
-        </h2>
+    <section className="relative w-full overflow-hidden bg-white py-12">
+      {/* Gradient Masks for smooth fade in/out */}
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-linear-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-linear-to-l from-white to-transparent" />
 
-        <div className="overflow-hidden relative">
-          {/* Fading edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-linear-to-r from-gray-100 to-transparent z-10" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-gray-100 to-transparent z-10" />
-
-          {/* Slider */}
-          <div className="flex whitespace-nowrap animate-scroll">
-            {sliderItems.map((p, index) => (
-              <div
-                key={p.id + "-" + index}
-                className="mx-8 inline-flex items-center justify-center w-[150px] h-[90px] bg-white rounded-lg shadow-sm"
-              >
+      <div className="flex w-full">
+        <motion.div
+          className="flex min-w-full items-center gap-16 px-8"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            duration: 40,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {marqueePartners.map((partner, idx) => (
+            <div
+              key={`${partner.id}-${idx}`}
+              className="group relative flex h-24 w-40 shrink-0 items-center justify-center grayscale transition-all duration-300 hover:grayscale-0 opacity-60 hover:opacity-100"
+            >
+              <div className="relative h-full w-full">
+                {/* 
+                  Using standard img tag or Next Image with objectFit contain.
+                  Since we don't know exact dimensions, object-contain is key.
+                */}
                 <Image
-                  src={p.logoUrl}
-                  width={120}
-                  height={80}
-                  alt="Partner logo"
-                  className="object-contain max-w-[120px] max-h-20"
+                  src={partner.logoUrl}
+                  alt={partner.name || "Partner Logo"}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100px, 160px"
                 />
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
-
-   
     </section>
   );
 }

@@ -7,9 +7,8 @@ import ImpactCarousel from "@/components/homepage/ImpactCarousel";
 import ImpactStats from "@/components/homepage/ImpactStats";
 import MissionSection from "@/components/homepage/MissionSection";
 import SpeciesShowcase from "@/components/homepage/SpeciesShowcase";
-import ImageCarousel from "@/components/homepage/ImageCarousel";
-import Footer from "@/components/Footer"; 
-import CountryGrid from "@/components/CountryGrid"; 
+import Footer from "@/components/Footer";
+import CountryGrid from "@/components/CountryGrid";
 import PartnersSlider from "@/components/PartnersSlider";
 
 const PartnersSliderComponent: any = PartnersSlider;
@@ -23,9 +22,10 @@ const mockStats = {
 };
 
 const mockPartners = [
-  { id: 1, name: "WWF", logoUrl: "/logos/logo1.png" }, // Placeholders
-  { id: 2, name: "AKDN", logoUrl: "/logos/logo2.png" },
-  { id: 3, name: "Ministry of Climate Change", logoUrl: "/logos/logo3.png" },
+  { id: 1, name: "WWF", logoUrl: "/partners/wwf.png" }, 
+  { id: 2, name: "AKRSP", logoUrl: "/partners/akrsp.jpg" },
+  { id: 3, name: "NUST", logoUrl: "/partners/nust.jpg" },
+  { id: 4, name: "WeClean", logoUrl: "/partners/weclean.jpg" },
 ];
 
 export default function HomePage() {
@@ -42,8 +42,6 @@ export default function HomePage() {
       <ImpactStats stats={mockStats} />
 
       <SpeciesShowcase />
-
-      <ImageCarousel />
 
       {/* Partners Section (Reusing existing components with wrappers for consistency) */}
       <div className="py-24 bg-white">

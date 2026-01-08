@@ -16,11 +16,6 @@ const photos = [
 export default function ImageCarousel() {
   return (
     <section className="py-24 bg-serena-sand text-green-950 overflow-hidden">
-      <div className="text-center mb-16 px-6">
-        <span className="text-serena-gold text-sm font-bold uppercase tracking-[0.3em] mb-4 block">Visual Journey</span>
-        <h2 className="text-4xl md:text-5xl font-serif font-bold">Conservation in Action</h2>
-      </div>
-
       <Swiper
         modules={[Autoplay, FreeMode]}
         spaceBetween={30}
@@ -52,12 +47,6 @@ export default function ImageCarousel() {
           </SwiperSlide>
         ))}
       </Swiper>
-      
-      <div className="mt-12 text-center">
-        <a href="#gallery" className="inline-block text-serena-gold border-b border-serena-gold/30 pb-1 text-sm uppercase tracking-widest hover:text-green-950 hover:border-green-950 transition-colors">
-            View Full Gallery
-        </a>
-      </div>
     </section>
   );
 }
