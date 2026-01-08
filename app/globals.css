@@ -74,6 +74,17 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom text selection colors */
+::selection {
+  background-color: var(--color-serena-green); /* Deep Teal/Green background */
+  color: var(--color-serena-sand); /* Warm Off-White text */
+}
+
+::-moz-selection {
+  background-color: var(--color-serena-green); /* Deep Teal/Green background */
+  color: var(--color-serena-sand); /* Warm Off-White text */
+}
+
 /* Dashboard-specific styles */
 .dashboard-heading {
   font-family: var(--font-playfair), Georgia, serif;
