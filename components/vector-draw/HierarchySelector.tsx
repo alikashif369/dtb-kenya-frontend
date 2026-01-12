@@ -45,7 +45,12 @@ export function HierarchySelector({
   const sitesFromCat = selectedCategoryId ? sitesByCategory[selectedCategoryId] || [] : [];
   const sitesFromSub = selectedSubCategoryId ? sitesBySubCategory[selectedSubCategoryId] || [] : [];
   const requiresSubCat = subCats.length > 0;
-  const sites = (requiresSubCat ? sitesFromSub : sitesFromCat).filter(site => !disabledSiteIds?.has(site.id));
+  
+  // Filter out sites that already have boundaries (polygons) for the selected year
+  const allSitesBeforeFilter = requiresSubCat ? sitesFromSub : sitesFromCat;
+  const sites = allSitesBeforeFilter.filter(site => !disabledSiteIds?.has(site.id));
+  
+  console.log("[HIERARCHY_SELECTOR] Filtered sites:", sites.length, "available out of", allSitesBeforeFilter.length, "total");
 
   return (
     <div className="space-y-3">

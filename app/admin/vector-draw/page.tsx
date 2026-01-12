@@ -155,25 +155,149 @@ function VectorDrawPageInner() {
     return new Set(allSitesWithBoundaries);
   }, [allSitesWithBoundaries]);
 
-  // Fetch all sites with boundaries for the selected year
+  // Cache with TTL (5 minutes) to prevent stale data issues
+  const boundariesCacheRef = useRef<{
+    year: number;
+    data: number[];
+    timestamp: number;
+    ttl: number; // Time to live in milliseconds
+  } | null>(null);
+  const isFetchingBoundariesRef = useRef(false);
+  const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+  // Helper to check if cache is valid
+  const isCacheValid = useCallback((year: number) => {
+    if (!boundariesCacheRef.current) return false;
+    if (boundariesCacheRef.current.year !== year) return false;
+    const age = Date.now() - boundariesCacheRef.current.timestamp;
+    return age < boundariesCacheRef.current.ttl;
+  }, []);
+
+  // Helper to invalidate cache (called after save)
+  const invalidateCache = useCallback(() => {
+    console.log('[CACHE] Invalidating boundaries cache');
+    boundariesCacheRef.current = null;
+  }, []);
+
+  // Cleanup: Clear cache and cancel any pending requests on unmount
   useEffect(() => {
+    return () => {
+      console.log('[CACHE] Component unmounting - clearing cache');
+      boundariesCacheRef.current = null;
+      isFetchingBoundariesRef.current = false;
+    };
+  }, []);
+
+  // Function to refresh the list of sites with boundaries
+  const refreshSitesWithBoundaries = useCallback(async (forceRefresh = false) => {
+    // Use cache if valid and not forcing refresh
+    if (!forceRefresh && isCacheValid(year)) {
+      console.log('[REFRESH_BOUNDARIES] Using cached data (still valid)');
+      setAllSitesWithBoundaries(boundariesCacheRef.current!.data);
+      return;
+    }
+
+    // Prevent duplicate simultaneous requests
+    if (isFetchingBoundariesRef.current) {
+      console.log('[REFRESH_BOUNDARIES] Already fetching, skipping duplicate request');
+      return;
+    }
+
+    try {
+      isFetchingBoundariesRef.current = true;
+      console.log("[REFRESH_BOUNDARIES] Fetching updated boundaries for year:", year);
+      const res = await fetch(`${API_BASE}/vectors?year=${year}`, {
+        headers: getHeaders(),
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        const siteIds = Array.from(new Set(data.map((vf: any) => vf.siteId)));
+        setAllSitesWithBoundaries(siteIds as number[]);
+        
+        // Update cache with timestamp
+        boundariesCacheRef.current = {
+          year,
+          data: siteIds as number[],
+          timestamp: Date.now(),
+          ttl: CACHE_TTL
+        };
+        console.log("[REFRESH_BOUNDARIES] Updated and cached boundaries for", siteIds.length, "sites");
+      } else if (res.status === 429) {
+        console.warn('[REFRESH_BOUNDARIES] Rate limited (429) - using cache if available');
+        // Try to use cached data even if expired
+        if (boundariesCacheRef.current && boundariesCacheRef.current.year === year) {
+          console.log('[REFRESH_BOUNDARIES] Using expired cache due to rate limit');
+          setAllSitesWithBoundaries(boundariesCacheRef.current.data);
+        }
+      } else {
+        console.error("[REFRESH_BOUNDARIES] Error response:", res.status, res.statusText);
+      }
+    } catch (err) {
+      console.error("[REFRESH_BOUNDARIES] Error fetching boundaries:", err);
+    } finally {
+      isFetchingBoundariesRef.current = false;
+    }
+  }, [year, isCacheValid, CACHE_TTL]);
+
+  // Fetch all sites with boundaries for the selected year (with caching)
+  useEffect(() => {
+    // Check cache first
+    if (isCacheValid(year)) {
+      console.log('[FETCH_ALL_BOUNDARIES] Using cached data for year:', year);
+      setAllSitesWithBoundaries(boundariesCacheRef.current!.data);
+      return;
+    }
+
+    // Prevent duplicate requests
+    if (isFetchingBoundariesRef.current) {
+      console.log('[FETCH_ALL_BOUNDARIES] Already fetching, skipping duplicate request');
+      return;
+    }
+
     const fetchAllBoundaries = async () => {
       try {
+        isFetchingBoundariesRef.current = true;
+        console.log("[FETCH_ALL_BOUNDARIES] Fetching boundaries for year:", year);
         const res = await fetch(`${API_BASE}/vectors?year=${year}`, {
           headers: getHeaders(),
         });
+        
         if (res.ok) {
           const data = await res.json();
           const siteIds = Array.from(new Set(data.map((vf: any) => vf.siteId)));
           setAllSitesWithBoundaries(siteIds as number[]);
-          console.log("[FETCH_ALL_BOUNDARIES] Found boundaries for sites:", siteIds);
+          
+          // Cache the result with timestamp
+          boundariesCacheRef.current = {
+            year,
+            data: siteIds as number[],
+            timestamp: Date.now(),
+            ttl: CACHE_TTL
+          };
+          console.log("[FETCH_ALL_BOUNDARIES] Found and cached", siteIds.length, "sites with boundaries");
+        } else if (res.status === 429) {
+          console.warn('[FETCH_ALL_BOUNDARIES] Rate limited (429) - retrying in 3 seconds');
+          // Retry after delay
+          setTimeout(() => {
+            isFetchingBoundariesRef.current = false;
+            fetchAllBoundaries();
+          }, 3000);
+          return; // Don't reset flag, retry will handle it
+        } else {
+          console.error("[FETCH_ALL_BOUNDARIES] Error response:", res.status, res.statusText);
+          setAllSitesWithBoundaries([]);
         }
       } catch (err) {
-        console.error("Error fetching all boundaries:", err);
+        console.error("[FETCH_ALL_BOUNDARIES] Error fetching all boundaries:", err);
+        setAllSitesWithBoundaries([]);
+      } finally {
+        isFetchingBoundariesRef.current = false;
       }
     };
+    
     fetchAllBoundaries();
-  }, [year]);
+  }, [year, isCacheValid, CACHE_TTL]);
 
   // Fetch features for selected site and year
   useEffect(() => {
@@ -471,17 +595,37 @@ function VectorDrawPageInner() {
       setStatus(null);
       showToast("Boundary saved successfully!", "success");
 
-      // Auto-select next available site
-      const nextAvailableSite = sites.find(
-        (s) => s.id !== selectedSiteId && !siteIdsWithBoundaries.has(s.id)
-      );
-      if (nextAvailableSite) {
-        console.log("[SAVE] Auto-selecting next site:", nextAvailableSite.id);
-        setSelectedSiteId(nextAvailableSite.id);
-      } else {
-        console.log("[SAVE] No more available sites");
-        setSelectedSiteId(null);
-      }
+      // Invalidate cache and refresh the list of sites with boundaries
+      console.log("[SAVE] Invalidating cache and refreshing boundaries list...");
+      invalidateCache();
+      
+      // Optimistically update the list immediately (don't wait for API)
+      setAllSitesWithBoundaries(prev => {
+        if (!prev.includes(selectedSiteId)) {
+          return [...prev, selectedSiteId];
+        }
+        return prev;
+      });
+      
+      // Then fetch fresh data in background (force refresh to bypass cache)
+      await refreshSitesWithBoundaries(true);
+
+      // Auto-select next available site (after refresh, so we have updated boundaries list)
+      // Note: We need to wait a moment for state to update
+      setTimeout(() => {
+        const updatedSiteIds = new Set(allSitesWithBoundaries);
+        updatedSiteIds.add(selectedSiteId); // Add the just-saved site
+        const nextAvailableSite = sites.find(
+          (s) => s.id !== selectedSiteId && !updatedSiteIds.has(s.id)
+        );
+        if (nextAvailableSite) {
+          console.log("[SAVE] Auto-selecting next site:", nextAvailableSite.id);
+          setSelectedSiteId(nextAvailableSite.id);
+        } else {
+          console.log("[SAVE] No more available sites");
+          setSelectedSiteId(null);
+        }
+      }, 100);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error saving boundary";
       // Provide extra hint for network errors
@@ -498,7 +642,7 @@ function VectorDrawPageInner() {
     } finally {
       setSaving(false);
     }
-  }, [polygonData, selectedSiteId, selectedCategoryId, year, showToast, sites, siteIdsWithBoundaries]);
+  }, [polygonData, selectedSiteId, selectedCategoryId, year, showToast, sites, siteIdsWithBoundaries, allSitesWithBoundaries, refreshSitesWithBoundaries, invalidateCache]);
 
   const handleUploadSuccess = useCallback((geojson: any) => {
     setUploadedGeoJSON(geojson);
