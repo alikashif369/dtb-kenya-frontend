@@ -208,7 +208,7 @@ export default function CategoryMetrics({
   }
 
   if (metrics.length === 0) {
-    return <EmptyState />;
+    return null;
   }
 
   return (

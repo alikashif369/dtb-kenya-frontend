@@ -14,14 +14,10 @@ export async function createSummary(data: SummaryFormData): Promise<CategorySumm
     displayOrder: data.displayOrder,
   };
 
-  // Set entity ID based on linkTo
-  if (data.linkTo === 'ORGANIZATION' && data.organizationId) {
-    payload.organizationId = data.organizationId;
-  } else if (data.linkTo === 'REGION' && data.regionId) {
-    payload.regionId = data.regionId;
-  } else if (data.linkTo === 'CATEGORY' && data.categoryId) {
-    payload.categoryId = data.categoryId;
-  }
+  // Set entity IDs - include all parent levels
+  if (data.organizationId) payload.organizationId = data.organizationId;
+  if (data.regionId) payload.regionId = data.regionId;
+  if (data.categoryId) payload.categoryId = data.categoryId;
 
   // Optional title
   if (data.title) payload.title = data.title;
@@ -90,14 +86,10 @@ export async function updateSummary(id: number, data: SummaryFormData): Promise<
     displayOrder: data.displayOrder,
   };
 
-  // Set entity ID based on linkTo
-  if (data.linkTo === 'ORGANIZATION' && data.organizationId) {
-    payload.organizationId = data.organizationId;
-  } else if (data.linkTo === 'REGION' && data.regionId) {
-    payload.regionId = data.regionId;
-  } else if (data.linkTo === 'CATEGORY' && data.categoryId) {
-    payload.categoryId = data.categoryId;
-  }
+  // Set entity IDs - include all parent levels
+  if (data.organizationId) payload.organizationId = data.organizationId;
+  if (data.regionId) payload.regionId = data.regionId;
+  if (data.categoryId) payload.categoryId = data.categoryId;
 
   // Optional title
   if (data.title) payload.title = data.title;

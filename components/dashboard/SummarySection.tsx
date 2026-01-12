@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import LandCoverChart from "./LandCoverChart";
 import CategoryMetrics from "./CategoryMetrics";
+import CategorySummaryDisplay from "./CategorySummaryDisplay";
 import SiteDetailsPanel from "./SiteDetailsPanel";
 import SiteVisuals from "./SiteVisuals";
 import type {
@@ -13,7 +14,9 @@ import type {
   SiteSpecies,
   Photo,
   CategoryType,
+  DashboardFilters,
 } from "./types";
+import type { CategorySummary } from "@/lib/api/dashboardApi";
 
 interface SummarySectionProps {
   // Site data (when single site selected)
@@ -24,12 +27,15 @@ interface SummarySectionProps {
 
   // Aggregate data (for org/region/category level)
   aggregateMetrics: AggregateMetrics[];
+  categorySummaries: CategorySummary[];
   categoryType?: CategoryType;
+  filters: DashboardFilters;
 
   // Loading states
   loading: {
     metrics: boolean;
     aggregateMetrics: boolean;
+    categorySummaries: boolean;
     species: boolean;
     photos: boolean;
   };
@@ -44,11 +50,16 @@ export default function SummarySection({
   siteSpecies,
   sitePhotos,
   aggregateMetrics,
+  categorySummaries,
   categoryType,
+  filters,
   loading,
   onSiteClose,
 }: SummarySectionProps) {
   const hasSingleSite = selectedSite !== null;
+
+  // Determine if we're at the top level (no filters selected)
+  const isTopLevel = !filters.organizationId && !filters.regionId && !filters.categoryId;
 
   return (
     <motion.div
@@ -137,30 +148,69 @@ export default function SummarySection({
               compact={false}
             />
 
-            {!loading.aggregateMetrics && aggregateMetrics.length === 0 && (
-              <div className="bg-stone-50 rounded-[2rem] border border-stone-100 p-16 text-center">
-                <div className="w-20 h-20 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-                  <svg
-                    className="w-10 h-10 text-emerald-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-serif font-bold text-stone-800 mb-3">
-                  Ecosystem Intelligence
-                </h3>
-                <p className="text-stone-500 max-w-md mx-auto leading-relaxed">
-                  Utilize the geospatial filters above to synthesize data across organizations, 
-                  regions, or impact categories. Select a specific site to unlock high-resolution imagery and field reports.
-                </p>
+            {/* Category Summaries - Text descriptions for org/region/category */}
+            <CategorySummaryDisplay
+              summaries={categorySummaries}
+              loading={loading.categorySummaries}
+            />
+
+            {/* Empty state handling */}
+            {!loading.aggregateMetrics && !loading.categorySummaries &&
+             aggregateMetrics.length === 0 && categorySummaries.length === 0 && (
+              <div className="bg-gradient-to-br from-white to-stone-50/30 rounded-2xl border border-gray-100 shadow-sm p-10">
+                {isTopLevel ? (
+                  // Default welcome text when no filters are selected
+                  <div className="prose prose-stone max-w-none">
+                    <h3 className="text-2xl font-serif font-bold text-[#115e59] mb-6 flex items-center gap-3">
+                      <span className="w-1 h-8 bg-[#b08d4b] rounded-full"></span>
+                      Serena Green Initiative
+                    </h3>
+                    <div className="space-y-4 text-gray-700 leading-relaxed">
+                      <p>
+                        Serena Hotels continue to pledge in promoting clean and green Pakistan by focusing on climate change mitigation,
+                        climate adaptation, land degradation, food security, biodiversity conservation, and enhancing community resilience.
+                      </p>
+                      <p>
+                        Serena Green Initiative unites our Asia and Africa programs to restore ecosystems and cut operational emissions.
+                        We focus on native tree planting and forest stewardship, water and soil conservation, and community-led stewardship
+                        backed by transparent monitoring. In parallel, we advance clean-energy upgrades—like rooftop solar and efficiency
+                        improvements—to support resilient, nature-positive hospitality across both regions.
+                      </p>
+                      <p>
+                        This is a pilot project of planting 600,000 trees, including species Populus (Poplar), Robinia pseudoacacia (Robinia),
+                        Salix (Willow), Elaeagnus angustifolia (Russian Olive), Pinus roxburghii (Chir), Quercus (Oak), Cedrus deodara (Deodar),
+                        Tamarix aphylla (Tamarix), Acacia nilotica (Kikar), Ziziphus mauritiana (Ber), and Melia azedarach (Bakain) in different
+                        areas of Gilgit-Baltistan, Balochistan, Chitral, Punjab, and KP. With afforestation and forest stewardship as the primary
+                        plantation types, this project has the potential to make a significant impact on the environment and local communities.
+                        Through collaboration and community involvement, this pilot project has the potential to serve as a model for other
+                        afforestation efforts around the world. The project has been completed in August, 2023.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  // "No metrics available" when deeper in hierarchy but no data
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-stone-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 text-stone-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-stone-600">No metrics available</p>
+                    <p className="text-xs text-stone-400 mt-1">
+                      Select a category to view performance metrics
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

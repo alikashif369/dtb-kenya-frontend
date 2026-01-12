@@ -22,6 +22,8 @@ import {
   getSiteSpecies,
   getRasterTileUrl,
   listRasters,
+  getCategorySummaries,
+  type CategorySummary,
 } from "@/lib/api/dashboardApi";
 import { fetchAllVectorLayers } from "@/lib/utils/vectorLayerService";
 
@@ -42,6 +44,7 @@ const initialLoadingState = {
   photos: false,
   species: false,
   aggregateMetrics: false,
+  categorySummaries: false,
 };
 
 export interface UseDashboardReturn {
@@ -51,6 +54,7 @@ export interface UseDashboardReturn {
   selectedSite: Site | null;
   yearlyMetrics: YearlyMetrics | null;
   aggregateMetrics: AggregateMetrics[];
+  categorySummaries: CategorySummary[];
   boundaries: SiteBoundary[];
   photos: Photo[];
   species: SiteSpecies[];
@@ -91,6 +95,7 @@ export function useDashboard(): UseDashboardReturn {
   const [yearlyMetrics, setYearlyMetrics] = useState<YearlyMetrics | null>(null);
   const [allYearlyMetrics, setAllYearlyMetrics] = useState<YearlyMetrics[]>([]);
   const [aggregateMetrics, setAggregateMetrics] = useState<AggregateMetrics[]>([]);
+  const [categorySummaries, setCategorySummaries] = useState<CategorySummary[]>([]);
   const [boundaries, setBoundaries] = useState<SiteBoundary[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [species, setSpecies] = useState<SiteSpecies[]>([]);
@@ -335,6 +340,46 @@ export function useDashboard(): UseDashboardReturn {
     loadAggregateMetrics();
   }, [filters.organizationId, filters.regionId, filters.categoryId]);
 
+  // Load category summaries when filters change
+  useEffect(() => {
+    async function loadCategorySummaries() {
+      try {
+        setLoading((prev) => ({ ...prev, categorySummaries: true }));
+
+        const summaryFilters: {
+          organizationId?: number;
+          regionId?: number;
+          categoryId?: number;
+        } = {};
+
+        if (filters.organizationId !== null) {
+          summaryFilters.organizationId = filters.organizationId;
+        }
+        if (filters.regionId !== null) {
+          summaryFilters.regionId = filters.regionId;
+        }
+        if (filters.categoryId !== null) {
+          summaryFilters.categoryId = filters.categoryId;
+        }
+
+        // Only fetch if at least one filter is set
+        if (Object.keys(summaryFilters).length > 0) {
+          const summaries = await getCategorySummaries(summaryFilters);
+          setCategorySummaries(summaries);
+        } else {
+          setCategorySummaries([]);
+        }
+      } catch (err) {
+        console.error("Failed to load category summaries:", err);
+        setCategorySummaries([]);
+      } finally {
+        setLoading((prev) => ({ ...prev, categorySummaries: false }));
+      }
+    }
+
+    loadCategorySummaries();
+  }, [filters.organizationId, filters.regionId, filters.categoryId]);
+
   // Actions
   const setFilter = useCallback(
     (level: keyof DashboardFilters, value: number | null) => {
@@ -442,6 +487,7 @@ export function useDashboard(): UseDashboardReturn {
     selectedSite,
     yearlyMetrics,
     aggregateMetrics,
+    categorySummaries,
     boundaries,
     photos,
     species,

@@ -261,6 +261,7 @@ export async function getCategorySummaries(filters?: {
   const response = await fetch(`${API_URL}/category-summaries?${params.toString()}`, {
     headers: getHeaders(),
   });
+
   return handleResponse<CategorySummary[]>(response);
 }
 

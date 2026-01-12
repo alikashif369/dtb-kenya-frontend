@@ -16,6 +16,7 @@ export default function DashboardPage() {
     selectedSite,
     yearlyMetrics,
     aggregateMetrics,
+    categorySummaries,
     boundaries,
     photos,
     species,
@@ -136,10 +137,13 @@ export default function DashboardPage() {
         siteSpecies={species}
         sitePhotos={photos}
         aggregateMetrics={aggregateMetrics}
+        categorySummaries={categorySummaries}
         categoryType={categoryType}
+        filters={filters}
         loading={{
           metrics: loading.metrics,
           aggregateMetrics: loading.aggregateMetrics,
+          categorySummaries: loading.categorySummaries,
           species: loading.species,
           photos: loading.photos,
         }}

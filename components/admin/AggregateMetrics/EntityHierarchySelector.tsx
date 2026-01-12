@@ -57,6 +57,7 @@ export default function EntityHierarchySelector({
         <label className="text-xs font-medium text-gray-700">
           Organization {entityType === 'ORGANIZATION' && <span className="text-red-600">*</span>}
         </label>
+
         <select
           value={organizationId || ''}
           onChange={(e) => {

@@ -66,18 +66,34 @@ export default function SummaryFormModal({ open, onClose, onSuccess, editingSumm
       return;
     }
 
-    // Entity validation
+    // Entity validation - require all parent levels
     if (form.linkTo === 'ORGANIZATION' && !form.organizationId) {
       setError('Please select an organization');
       return;
     }
-    if (form.linkTo === 'REGION' && !form.regionId) {
-      setError('Please select a region');
-      return;
+    if (form.linkTo === 'REGION') {
+      if (!form.organizationId) {
+        setError('Please select an organization');
+        return;
+      }
+      if (!form.regionId) {
+        setError('Please select a region');
+        return;
+      }
     }
-    if (form.linkTo === 'CATEGORY' && !form.categoryId) {
-      setError('Please select a category');
-      return;
+    if (form.linkTo === 'CATEGORY') {
+      if (!form.organizationId) {
+        setError('Please select an organization');
+        return;
+      }
+      if (!form.regionId) {
+        setError('Please select a region');
+        return;
+      }
+      if (!form.categoryId) {
+        setError('Please select a category');
+        return;
+      }
     }
 
     setSaving(true);
@@ -118,10 +134,10 @@ export default function SummaryFormModal({ open, onClose, onSuccess, editingSumm
   const isValidLength = characterCount >= 10;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center overflow-y-auto py-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center overflow-y-auto py-4">
       <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[95vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between z-20">
           <h2 className="text-xl font-bold text-gray-900">
             {editingSummary ? 'Edit Summary' : 'Create New Summary'}
           </h2>
@@ -168,9 +184,10 @@ export default function SummaryFormModal({ open, onClose, onSuccess, editingSumm
             organizationId={form.organizationId}
             regionId={form.regionId}
             categoryId={form.categoryId}
-            onOrganizationChange={(id) => setForm({ ...form, organizationId: id })}
-            onRegionChange={(id) => setForm({ ...form, regionId: id })}
-            onCategoryChange={(id) => setForm({ ...form, categoryId: id })}
+            onOrganizationChange={(id) => setForm((prevForm) => ({ ...prevForm, organizationId: id }))}
+            onRegionChange={(id) => setForm((prevForm) => ({ ...prevForm, regionId: id }))}
+            onCategoryChange={(id) => setForm((prevForm) => ({ ...prevForm, categoryId: id }))}
+
             orgs={orgs}
             regionsByOrg={regionsByOrg}
             categoriesByRegion={categoriesByRegion}
