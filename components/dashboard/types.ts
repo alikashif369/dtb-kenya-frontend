@@ -71,6 +71,7 @@ export interface Site {
   siteType: SiteType;
   infrastructure?: string;
   yearlyMetrics?: YearlyMetrics[];
+  deletedAt?: string | null;
 }
 
 // ============================================================================

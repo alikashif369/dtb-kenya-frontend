@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Plus, Pencil, Trash2, MapPin, Filter, Search, Trees } from 'lucide-react';
 import { AdminPageHeader } from '@/components/admin/layout/AdminLayout';
 import DataTable, { Column, ActionButton, Badge } from '@/components/admin/shared/DataTable';
@@ -276,13 +277,13 @@ export default function SitesTab() {
         title="Sites"
         description="Manage individual sites (plantations, solar installations, conservation areas, etc.)"
         actions={
-          <button
-            onClick={handleCreateClick}
+          <Link
+            href="/admin/vector-draw"
             className="rounded-lg bg-green-900 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 transition inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Create Site
-          </button>
+          </Link>
         }
       />
 

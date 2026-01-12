@@ -45,7 +45,7 @@ export function HierarchySelector({
   const sitesFromCat = selectedCategoryId ? sitesByCategory[selectedCategoryId] || [] : [];
   const sitesFromSub = selectedSubCategoryId ? sitesBySubCategory[selectedSubCategoryId] || [] : [];
   const requiresSubCat = subCats.length > 0;
-  const sites = requiresSubCat ? sitesFromSub : sitesFromCat;
+  const sites = (requiresSubCat ? sitesFromSub : sitesFromCat).filter(site => !disabledSiteIds?.has(site.id));
 
   return (
     <div className="space-y-3">

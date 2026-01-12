@@ -112,6 +112,9 @@ export function useDashboard(): UseDashboardReturn {
   // Loading and error states
   const [loading, setLoading] = useState(initialLoadingState);
   const [error, setError] = useState<string | null>(null);
+  
+  // Refresh trigger for boundaries
+  const [boundariesRefreshKey, setBoundariesRefreshKey] = useState(0);
 
   // Derived state
   const availableYears = useMemo(() => {
@@ -157,6 +160,7 @@ export function useDashboard(): UseDashboardReturn {
     async function loadBoundaries() {
       try {
         setLoading((prev) => ({ ...prev, boundaries: true }));
+        console.log('[useDashboard] Fetching boundaries...');
         const response = await fetchAllVectorLayers();
         if (response.success && response.data) {
           // Convert to SiteBoundary format
@@ -168,7 +172,24 @@ export function useDashboard(): UseDashboardReturn {
             properties: layer.properties,
             site: layer.site,
           }));
-          setBoundaries(siteBoundaries);
+          console.log('[useDashboard] Loaded', siteBoundaries.length, 'boundaries');
+          
+          // Additional safety filter: only include boundaries where site exists and is not deleted
+          const validBoundaries = siteBoundaries.filter(b => {
+            if (!b.site) {
+              console.warn(`[useDashboard] Boundary ${b.id} has no site data, filtering out`);
+              return false;
+            }
+            // Check if site is soft-deleted (deletedAt is set)
+            if (b.site.deletedAt) {
+              console.warn(`[useDashboard] Filtering out boundary for deleted site ${b.siteId}`);
+              return false;
+            }
+            return true;
+          });
+          
+          console.log('[useDashboard] After filtering:', validBoundaries.length, 'valid boundaries');
+          setBoundaries(validBoundaries);
         }
       } catch (err) {
         console.error("Failed to load boundaries:", err);
@@ -178,7 +199,7 @@ export function useDashboard(): UseDashboardReturn {
     }
 
     loadBoundaries();
-  }, []);
+  }, [boundariesRefreshKey]); // Re-run when boundariesRefreshKey changes
 
   // Load site details when siteId changes
   useEffect(() => {
@@ -237,9 +258,19 @@ export function useDashboard(): UseDashboardReturn {
         }
 
         setError(null);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load site data:", err);
-        setError("Failed to load site details");
+        
+        // Check if this is a "not found" error (likely soft-deleted site)
+        if (err?.message?.includes('not found') || err?.message?.includes('Site with ID')) {
+          console.warn(`Site ${filters.siteId} not found (possibly soft-deleted). Clearing selection.`);
+          setError(`Site not found. It may have been deleted.`);
+          
+          // Clear the site selection to prevent repeated errors
+          setFilters((prev) => ({ ...prev, siteId: null }));
+        } else {
+          setError("Failed to load site details");
+        }
       } finally {
         setLoading((prev) => ({
           ...prev,
@@ -475,10 +506,26 @@ export function useDashboard(): UseDashboardReturn {
   }, []);
 
   const refresh = useCallback(() => {
-    // Trigger reload by resetting relevant state
-    setLoading(initialLoadingState);
-    // The useEffects will re-run on state change
-  }, []);
+    console.log('[useDashboard] Refreshing boundaries and hierarchy...');
+    // Increment the refresh key to trigger boundary reload
+    setBoundariesRefreshKey((prev) => prev + 1);
+    
+    // Reload hierarchy
+    getHierarchyTree().then(setHierarchy).catch(console.error);
+    
+    // If a site is selected, reload its data
+    if (filters.siteId) {
+      getSite(filters.siteId, true)
+        .then(setSelectedSite)
+        .catch((err) => {
+          console.error('Failed to refresh site:', err);
+          // If site is deleted/not found, clear selection
+          if (err?.message?.includes('not found')) {
+            setFilters((prev) => ({ ...prev, siteId: null }));
+          }
+        });
+    }
+  }, [filters.siteId]);
 
   return {
     // State

@@ -91,6 +91,7 @@ function VectorDrawPageInner() {
   const [loadingLayers, setLoadingLayers] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [allSitesWithBoundaries, setAllSitesWithBoundaries] = useState<number[]>([]);
 
   // Log hierarchy data when it changes
   useEffect(() => {
@@ -150,12 +151,29 @@ function VectorDrawPageInner() {
     return filtered;
   }, [sites, vectorFeatures, year]);
 
-  // Sites that have boundaries for this year (disabled in selector)
   const siteIdsWithBoundaries = useMemo(() => {
-    const disabled = new Set(vectorFeatures.map((vf) => vf.siteId));
-    console.log("[DISABLED] Sites with boundaries:", Array.from(disabled));
-    return disabled;
-  }, [vectorFeatures]);
+    return new Set(allSitesWithBoundaries);
+  }, [allSitesWithBoundaries]);
+
+  // Fetch all sites with boundaries for the selected year
+  useEffect(() => {
+    const fetchAllBoundaries = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/vectors?year=${year}`, {
+          headers: getHeaders(),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const siteIds = Array.from(new Set(data.map((vf: any) => vf.siteId)));
+          setAllSitesWithBoundaries(siteIds as number[]);
+          console.log("[FETCH_ALL_BOUNDARIES] Found boundaries for sites:", siteIds);
+        }
+      } catch (err) {
+        console.error("Error fetching all boundaries:", err);
+      }
+    };
+    fetchAllBoundaries();
+  }, [year]);
 
   // Fetch features for selected site and year
   useEffect(() => {
@@ -338,6 +356,86 @@ function VectorDrawPageInner() {
             properties: { source: "drawing" },
           }),
         });
+
+        // Handle 409 Conflict - boundary already exists, need to use PATCH
+        if (res.status === 409) {
+          console.log("[SAVE] Boundary already exists (409), fetching existing vector to update...");
+
+          // Fetch the existing boundary for this site/year
+          const fetchRes = await fetch(`${API_BASE}/vectors?siteId=${selectedSiteId}&year=${year}`, {
+            headers: getHeaders(),
+          });
+
+          if (fetchRes.ok) {
+            const existingVectors = await fetchRes.json();
+            const vectorsArray = Array.isArray(existingVectors) ? existingVectors : [];
+
+            if (vectorsArray.length > 0) {
+              const vectorId = vectorsArray[0].id;
+              console.log("[SAVE] Found existing vector ID:", vectorId, "- retrying with PATCH");
+
+              // Retry with PATCH
+              const patchRes = await fetch(`${API_BASE}/vectors/${vectorId}`, {
+                method: "PATCH",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                  geometry: polygonData.feature.geometry,
+                  properties: { source: "drawing" }
+                }),
+              });
+
+              if (!patchRes.ok) {
+                const errText = await patchRes.text();
+                throw new Error(errText || "Failed to update boundary");
+              }
+
+              const updated = await patchRes.json();
+              console.log("[SAVE] Boundary updated successfully:", updated);
+              setExistingVectorId(updated.id);
+
+              // Refresh the yellow background layer
+              console.log("[SAVE] Refreshing background layer after update...");
+              if (drawRef.current?.refreshBackgroundLayer) {
+                try {
+                  await drawRef.current.refreshBackgroundLayer();
+                  console.log("[SAVE] Background layer refreshed successfully");
+                } catch (error) {
+                  console.error("[SAVE] Error refreshing background layer:", error);
+                }
+              }
+
+              // Clear the blue drawing layer
+              console.log("[SAVE] Clearing blue drawing layer after update");
+              drawRef.current?.deleteAll?.();
+              setVectorFeatures([]);
+
+              // Complete the save flow with cleanup
+              setPolygonData(null);
+              setStatus(null);
+              showToast("Boundary updated successfully!", "success");
+
+              // Auto-select next available site
+              const nextAvailableSite = sites.find(
+                (s) => s.id !== selectedSiteId && !siteIdsWithBoundaries.has(s.id)
+              );
+              if (nextAvailableSite) {
+                console.log("[SAVE] Auto-selecting next site:", nextAvailableSite.id);
+                setSelectedSiteId(nextAvailableSite.id);
+              } else {
+                console.log("[SAVE] No more available sites");
+                setSelectedSiteId(null);
+              }
+
+              // Don't throw - we successfully recovered from the conflict
+              return; // Exit early, skip the rest of the POST branch
+            }
+          }
+
+          // If we couldn't fetch or find the existing vector, throw the original error
+          const err = await res.text();
+          throw new Error(err || "Failed to save - boundary already exists");
+        }
+
         if (!res.ok) {
           const err = await res.text();
           throw new Error(err || "Failed to save");
