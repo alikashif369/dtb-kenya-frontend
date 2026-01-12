@@ -186,7 +186,7 @@ export default function AggregateMetricsTab() {
               onChange={(e) => handleFilterChange('year', e.target.value ? Number(e.target.value) : undefined)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-green-900 focus:border-transparent"
               placeholder="Filter by year"
-              min={2000}
+              min={2019}
               max={2100}
             />
           </div>

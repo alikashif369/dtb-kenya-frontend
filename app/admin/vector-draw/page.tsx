@@ -110,8 +110,7 @@ function VectorDrawPageInner() {
   const selectedSite = useMemo(() => sites.find((s) => s.id === selectedSiteId) || null, [sites, selectedSiteId]);
 
   const years = useMemo(() => {
-    const y = new Date().getFullYear();
-    return Array.from({ length: 10 }, (_, i) => y - i).sort((a, b) => a - b);
+    return Array.from({ length: 82 }, (_, i) => 2019 + i).sort((a, b) => a - b);
   }, []);
 
   // Called by Sidebar after an upload is saved to the API

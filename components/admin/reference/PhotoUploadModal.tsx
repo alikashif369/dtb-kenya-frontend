@@ -332,7 +332,7 @@ export default function PhotoUploadModal({
                 onChange={(e) => handleChange('year', e.target.value ? parseInt(e.target.value) : undefined)}
                 className={inputClassName}
                 placeholder="e.g., 2024"
-                min={2000}
+                min={2019}
                 max={2100}
                 disabled={loading}
               />

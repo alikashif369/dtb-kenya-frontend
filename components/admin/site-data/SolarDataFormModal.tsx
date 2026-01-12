@@ -185,8 +185,8 @@ export default function SolarDataFormModal({
 
   if (!open) return null;
 
-  // Generate year options (from 1990 to 2100)
-  const yearOptions = Array.from({ length: 111 }, (_, i) => 1990 + i);
+  // Generate year options (from 2019 to 2100)
+  const yearOptions = Array.from({ length: 82 }, (_, i) => 2019 + i);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">

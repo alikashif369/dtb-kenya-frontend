@@ -262,7 +262,7 @@ export default function SiteSpeciesModal({
                     onChange={(e) => setPlantedYear(e.target.value ? Number(e.target.value) : '')}
                     className={inputClassName}
                     placeholder="e.g., 2023"
-                    min={1900}
+                    min={2019}
                     max={2100}
                   />
                 </div>
@@ -353,7 +353,7 @@ export default function SiteSpeciesModal({
                           onChange={(e) => setEditYear(e.target.value ? Number(e.target.value) : '')}
                           className="w-20 px-2 py-1 text-sm border rounded"
                           placeholder="Year"
-                          min={1900}
+                          min={2019}
                           max={2100}
                         />
                         <button

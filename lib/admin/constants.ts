@@ -38,7 +38,7 @@ export const RASTER_TYPES = [
   { value: true, label: 'Classified Raster', color: 'green', badgeClass: 'bg-green-100 text-green-800' },
 ] as const;
 
-export const YEARS = Array.from({ length: 11 }, (_, i) => 2020 + i); // 2020-2030
+export const YEARS = Array.from({ length: 82 }, (_, i) => 2019 + i); // 2019-2100
 
 export const TIME_PERIOD_TYPES = [
   { value: 'single', label: 'Single Year' },
