@@ -87,6 +87,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       { href: '/admin/plantation-data', label: 'Plantation Data' },
                       { href: '/admin/solar-data', label: 'Solar Data' },
                       { href: '/admin/waste-data', label: 'Waste Data' },
+                      { href: '/admin/sewage-data', label: 'Sewage Data' },
+                      { href: '/admin/community-data', label: 'Community Data' },
                       { href: '/admin/yearly-metrics', label: 'Yearly Metrics' },
                     ]},
                     { label: 'Reference Data', items: [
@@ -229,6 +231,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         { href: '/admin/plantation-data', label: 'Plantation Data' },
                         { href: '/admin/solar-data', label: 'Solar Data' },
                         { href: '/admin/waste-data', label: 'Waste Data' },
+                        { href: '/admin/sewage-data', label: 'Sewage Data' },
+                        { href: '/admin/community-data', label: 'Community Data' },
                         { href: '/admin/yearly-metrics', label: 'Yearly Metrics' },
                       ]},
                       { label: 'Reference Data', items: [

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
@@ -10,8 +11,14 @@ import {
   Trees,
   Camera,
   Layers,
+  Sun,
+  Zap,
+  Calendar,
+  Recycle,
+  Droplets,
+  Users,
 } from "lucide-react";
-import type { Site, YearlyMetrics, SiteSpecies, Photo } from "./types";
+import type { Site, YearlyMetrics, SiteSpecies, Photo, CategoryType } from "./types";
 import { formatArea } from "@/lib/api/dashboardApi";
 import { getCategoryColor } from "./utils/colorPalettes";
 
@@ -20,6 +27,7 @@ interface SiteDetailsPanelProps {
   metrics: YearlyMetrics | null;
   species: SiteSpecies[];
   photos: Photo[];
+  selectedYear?: number | null;
   loading?: boolean;
   onClose?: () => void;
 }
@@ -56,11 +64,340 @@ function EmptyState() {
   );
 }
 
+// Quick Stats Card Component
+function QuickStatCard({
+  icon: Icon,
+  label,
+  value,
+  iconColor,
+  bgGradient,
+  borderColor,
+  labelColor,
+  valueColor,
+}: {
+  icon: any;
+  label: string;
+  value: React.ReactNode;
+  iconColor: string;
+  bgGradient: string;
+  borderColor: string;
+  labelColor: string;
+  valueColor: string;
+}) {
+  return (
+    <div className={`p-4 bg-gradient-to-br ${bgGradient} rounded-2xl border ${borderColor} group hover:shadow-md transition-all`}>
+      <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-sm mb-2 group-hover:scale-105 transition-transform">
+        <Icon className={`w-4 h-4 ${iconColor}`} />
+      </div>
+      <p className={`text-[9px] uppercase font-black tracking-[0.2em] ${labelColor} mb-0.5`}>{label}</p>
+      <p className={`text-lg font-bold ${valueColor}`}>{value}</p>
+    </div>
+  );
+}
+
+// Render category-specific quick stats
+function renderQuickStats(site: Site, species: SiteSpecies[], photos: Photo[], selectedYear?: number | null) {
+  const categoryType = site.category?.type as CategoryType;
+
+  // Solar-specific stats
+  if (categoryType === "SOLAR") {
+    const solarData = site.solarData;
+
+    // Extract available years from quarterly production
+    const availableYears: number[] = [];
+    if (solarData?.quarterlyProduction) {
+      Object.keys(solarData.quarterlyProduction).forEach(key => {
+        const year = parseInt(key.split('_')[0]);
+        if (!isNaN(year) && !availableYears.includes(year)) availableYears.push(year);
+      });
+      availableYears.sort((a, b) => a - b);
+    }
+
+    // Use selected year or default to latest
+    const currentYear = selectedYear || (availableYears.length > 0 ? availableYears[availableYears.length - 1] : new Date().getFullYear());
+
+    // Get year-specific production
+    const yearProduction = solarData?.quarterlyProduction ? (
+      (solarData.quarterlyProduction[`${currentYear}_Q1`] || 0) +
+      (solarData.quarterlyProduction[`${currentYear}_Q2`] || 0) +
+      (solarData.quarterlyProduction[`${currentYear}_Q3`] || 0) +
+      (solarData.quarterlyProduction[`${currentYear}_Q4`] || 0)
+    ) : 0;
+
+    // Count quarters with data for this year
+    const quartersWithData = solarData?.quarterlyProduction ? [
+      solarData.quarterlyProduction[`${currentYear}_Q1`],
+      solarData.quarterlyProduction[`${currentYear}_Q2`],
+      solarData.quarterlyProduction[`${currentYear}_Q3`],
+      solarData.quarterlyProduction[`${currentYear}_Q4`],
+    ].filter(v => v && v > 0).length : 0;
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <QuickStatCard
+          icon={Sun}
+          label="Capacity"
+          value={solarData?.capacityKwh ? `${solarData.capacityKwh.toLocaleString()} kWh` : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-amber-600"
+          bgGradient="from-amber-50/50 to-orange-50/50"
+          borderColor="border-amber-200/30 hover:border-amber-300"
+          labelColor="text-amber-700"
+          valueColor="text-amber-700"
+        />
+        <QuickStatCard
+          icon={Zap}
+          label={`${currentYear} Production`}
+          value={yearProduction > 0 ? `${yearProduction.toLocaleString()} kWh` : <span className="text-gray-300 text-sm font-medium italic">Recording</span>}
+          iconColor="text-emerald-600"
+          bgGradient="from-emerald-50/50 to-teal-50/50"
+          borderColor="border-emerald-200/30 hover:border-emerald-300"
+          labelColor="text-emerald-700"
+          valueColor="text-emerald-700"
+        />
+        <QuickStatCard
+          icon={Calendar}
+          label="Installation Year"
+          value={solarData?.installationYear || <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
+          iconColor="text-blue-600"
+          bgGradient="from-blue-50/50 to-sky-50/50"
+          borderColor="border-blue-200/30 hover:border-blue-300"
+          labelColor="text-blue-700"
+          valueColor="text-blue-700"
+        />
+        <QuickStatCard
+          icon={Layers}
+          label={`Q's in ${currentYear}`}
+          value={quartersWithData > 0 ? `${quartersWithData}/4` : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-purple-600"
+          bgGradient="from-purple-50/50 to-violet-50/50"
+          borderColor="border-purple-200/30 hover:border-purple-300"
+          labelColor="text-purple-700"
+          valueColor="text-purple-700"
+        />
+      </div>
+    );
+  }
+
+  // Waste-specific stats
+  if (categoryType === "WASTE") {
+    const wasteData = site.wasteData;
+    const latestWaste = wasteData && wasteData.length > 0
+      ? [...wasteData].sort((a, b) => b.year - a.year)[0]
+      : null;
+    const totalWaste = wasteData?.reduce((sum, d) => sum + d.organicWaste, 0) || 0;
+    const totalCompost = wasteData?.reduce((sum, d) => sum + d.compostReceived, 0) || 0;
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <QuickStatCard
+          icon={Recycle}
+          label="Latest Year"
+          value={latestWaste?.year || <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
+          iconColor="text-green-600"
+          bgGradient="from-green-50/50 to-emerald-50/50"
+          borderColor="border-green-200/30 hover:border-green-300"
+          labelColor="text-green-700"
+          valueColor="text-green-700"
+        />
+        <QuickStatCard
+          icon={Ruler}
+          label="Total Waste"
+          value={totalWaste > 0 ? `${totalWaste.toLocaleString()} kg` : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-amber-600"
+          bgGradient="from-amber-50/50 to-orange-50/50"
+          borderColor="border-amber-200/30 hover:border-amber-300"
+          labelColor="text-amber-700"
+          valueColor="text-amber-700"
+        />
+        <QuickStatCard
+          icon={Trees}
+          label="Total Compost"
+          value={totalCompost > 0 ? `${totalCompost.toLocaleString()} kg` : <span className="text-gray-300 text-sm font-medium italic">Recording</span>}
+          iconColor="text-lime-600"
+          bgGradient="from-lime-50/50 to-green-50/50"
+          borderColor="border-lime-200/30 hover:border-lime-300"
+          labelColor="text-lime-700"
+          valueColor="text-lime-700"
+        />
+        <QuickStatCard
+          icon={Layers}
+          label="Years Tracked"
+          value={wasteData?.length || <span className="text-gray-300 text-sm font-medium italic">0</span>}
+          iconColor="text-teal-600"
+          bgGradient="from-teal-50/50 to-cyan-50/50"
+          borderColor="border-teal-200/30 hover:border-teal-300"
+          labelColor="text-teal-700"
+          valueColor="text-teal-700"
+        />
+      </div>
+    );
+  }
+
+  // Sewage-specific stats
+  if (categoryType === "SEWAGE") {
+    const sewageData = site.sewageData;
+    const latestSewage = sewageData && sewageData.length > 0
+      ? [...sewageData].sort((a, b) => b.year - a.year)[0]
+      : null;
+    const avgRecovery = sewageData && sewageData.length > 0
+      ? sewageData.reduce((sum, d) => sum + d.recoveryRatio, 0) / sewageData.length
+      : 0;
+    const totalMethane = sewageData?.reduce((sum, d) => sum + d.methaneSaved, 0) || 0;
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <QuickStatCard
+          icon={Droplets}
+          label="Recovery Rate"
+          value={avgRecovery > 0 ? `${(avgRecovery * 100).toFixed(1)}%` : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-teal-600"
+          bgGradient="from-teal-50/50 to-cyan-50/50"
+          borderColor="border-teal-200/30 hover:border-teal-300"
+          labelColor="text-teal-700"
+          valueColor="text-teal-700"
+        />
+        <QuickStatCard
+          icon={Calendar}
+          label="Latest Year"
+          value={latestSewage?.year || <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
+          iconColor="text-blue-600"
+          bgGradient="from-blue-50/50 to-sky-50/50"
+          borderColor="border-blue-200/30 hover:border-blue-300"
+          labelColor="text-blue-700"
+          valueColor="text-blue-700"
+        />
+        <QuickStatCard
+          icon={Zap}
+          label="Methane Saved"
+          value={totalMethane > 0 ? `${totalMethane.toLocaleString()} kg` : <span className="text-gray-300 text-sm font-medium italic">Recording</span>}
+          iconColor="text-emerald-600"
+          bgGradient="from-emerald-50/50 to-green-50/50"
+          borderColor="border-emerald-200/30 hover:border-emerald-300"
+          labelColor="text-emerald-700"
+          valueColor="text-emerald-700"
+        />
+        <QuickStatCard
+          icon={Layers}
+          label="Years Tracked"
+          value={sewageData?.length || <span className="text-gray-300 text-sm font-medium italic">0</span>}
+          iconColor="text-purple-600"
+          bgGradient="from-purple-50/50 to-violet-50/50"
+          borderColor="border-purple-200/30 hover:border-purple-300"
+          labelColor="text-purple-700"
+          valueColor="text-purple-700"
+        />
+      </div>
+    );
+  }
+
+  // Community-specific stats
+  if (categoryType === "COMMUNITY") {
+    const communityData = site.communityData;
+    const dataKeys = communityData?.data ? Object.keys(communityData.data) : [];
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <QuickStatCard
+          icon={Users}
+          label="Initiative Type"
+          value={site.siteType ? site.siteType.replace(/_/g, " ").toLowerCase() : <span className="text-gray-300 text-sm font-medium italic">Community</span>}
+          iconColor="text-purple-600"
+          bgGradient="from-purple-50/50 to-violet-50/50"
+          borderColor="border-purple-200/30 hover:border-purple-300"
+          labelColor="text-purple-700"
+          valueColor="text-purple-700 capitalize"
+        />
+        <QuickStatCard
+          icon={Calendar}
+          label="Data Year"
+          value={communityData?.year || <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
+          iconColor="text-blue-600"
+          bgGradient="from-blue-50/50 to-sky-50/50"
+          borderColor="border-blue-200/30 hover:border-blue-300"
+          labelColor="text-blue-700"
+          valueColor="text-blue-700"
+        />
+        <QuickStatCard
+          icon={Ruler}
+          label="Coverage Area"
+          value={site.area ? formatArea(site.area) : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-emerald-600"
+          bgGradient="from-stone-50 to-stone-100/50"
+          borderColor="border-stone-200/30 hover:border-emerald-200"
+          labelColor="text-gray-400"
+          valueColor="text-gray-800"
+        />
+        <QuickStatCard
+          icon={Layers}
+          label="Metrics Tracked"
+          value={dataKeys.length > 0 ? dataKeys.length : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+          iconColor="text-amber-600"
+          bgGradient="from-amber-50/50 to-orange-50/50"
+          borderColor="border-amber-200/30 hover:border-amber-300"
+          labelColor="text-amber-700"
+          valueColor="text-amber-700"
+        />
+      </div>
+    );
+  }
+
+  // Default: Plantation/Restoration stats
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      {/* Area */}
+      <QuickStatCard
+        icon={Ruler}
+        label="Coverage Area"
+        value={site.area ? formatArea(site.area) : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+        iconColor="text-emerald-600"
+        bgGradient="from-stone-50 to-stone-100/50"
+        borderColor="border-stone-200/30 hover:border-emerald-200"
+        labelColor="text-gray-400"
+        valueColor="text-gray-800"
+      />
+      {/* Site Type */}
+      <QuickStatCard
+        icon={Building2}
+        label="Infrastructure"
+        value={site.siteType ? <span className="capitalize">{site.siteType.replace(/_/g, " ").toLowerCase()}</span> : <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
+        iconColor="text-emerald-600"
+        bgGradient="from-stone-50 to-stone-100/50"
+        borderColor="border-stone-200/30 hover:border-emerald-200"
+        labelColor="text-gray-400"
+        valueColor="text-gray-800"
+      />
+      {/* Species Count */}
+      <QuickStatCard
+        icon={Trees}
+        label="Biodiversity"
+        value={species.length > 0 ? <>{species.length} <span className="text-sm font-medium">Species</span></> : <span className="text-gray-300 text-sm font-medium italic">Surveying</span>}
+        iconColor="text-emerald-600"
+        bgGradient="from-emerald-50/50 to-teal-50/50"
+        borderColor="border-emerald-200/30 hover:border-emerald-300"
+        labelColor="text-emerald-700"
+        valueColor="text-emerald-700"
+      />
+      {/* Photos Count */}
+      <QuickStatCard
+        icon={Camera}
+        label="Field Photos"
+        value={photos.length > 0 ? <>{photos.length} <span className="text-sm font-medium">Images</span></> : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
+        iconColor="text-amber-600"
+        bgGradient="from-amber-50/50 to-orange-50/50"
+        borderColor="border-amber-200/30 hover:border-amber-300"
+        labelColor="text-amber-700"
+        valueColor="text-amber-600"
+      />
+    </div>
+  );
+}
+
 export default function SiteDetailsPanel({
   site,
   metrics,
   species,
   photos,
+  selectedYear,
   loading = false,
   onClose,
 }: SiteDetailsPanelProps) {
@@ -145,62 +482,10 @@ export default function SiteDetailsPanel({
           </div>
         </div>
 
-        {/* Main Content - Fills remaining space */}
-        <div className="flex-grow flex flex-col justify-end p-8 pt-0">
-          {/* Quick Stats Grid - 2x2 */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Area */}
-            <div className="p-5 bg-gradient-to-br from-stone-50 to-stone-100/50 rounded-2xl border border-stone-200/30 group hover:border-emerald-200 transition-all hover:shadow-md">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
-                <Ruler className="w-5 h-5 text-emerald-600" />
-              </div>
-              <p className="text-[10px] uppercase font-black tracking-[0.2em] text-gray-400 mb-1">Coverage Area</p>
-              <p className="text-xl font-bold text-gray-800">
-                {site.area ? formatArea(site.area) : <span className="text-gray-300 text-sm font-medium italic">Pending</span>}
-              </p>
-            </div>
-
-            {/* Site Type */}
-            <div className="p-5 bg-gradient-to-br from-stone-50 to-stone-100/50 rounded-2xl border border-stone-200/30 group hover:border-emerald-200 transition-all hover:shadow-md">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
-                <Building2 className="w-5 h-5 text-emerald-600" />
-              </div>
-              <p className="text-[10px] uppercase font-black tracking-[0.2em] text-gray-400 mb-1">Infrastructure</p>
-              <p className="text-xl font-bold text-gray-800 capitalize">
-                {site.siteType ? site.siteType.replace(/_/g, " ").toLowerCase() : <span className="text-gray-300 text-sm font-medium italic">N/A</span>}
-              </p>
-            </div>
-
-            {/* Species Count */}
-            <div className="p-5 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 rounded-2xl border border-emerald-200/30 group hover:border-emerald-300 transition-all hover:shadow-md">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
-                <Trees className="w-5 h-5 text-emerald-600" />
-              </div>
-              <p className="text-[10px] uppercase font-black tracking-[0.2em] text-emerald-700 mb-1">Biodiversity</p>
-              <p className="text-xl font-bold text-emerald-700">
-                {species.length > 0 ? (
-                  <>{species.length} <span className="text-sm font-medium">Species</span></>
-                ) : (
-                  <span className="text-gray-300 text-sm font-medium italic">Surveying</span>
-                )}
-              </p>
-            </div>
-
-            {/* Photos Count */}
-            <div className="p-5 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-2xl border border-amber-200/30 group hover:border-amber-300 transition-all hover:shadow-md">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
-                <Camera className="w-5 h-5 text-amber-600" />
-              </div>
-              <p className="text-[10px] uppercase font-black tracking-[0.2em] text-amber-700 mb-1">Field Photos</p>
-              <p className="text-xl font-bold text-amber-600">
-                {photos.length > 0 ? (
-                  <>{photos.length} <span className="text-sm font-medium">Images</span></>
-                ) : (
-                  <span className="text-gray-300 text-sm font-medium italic">Pending</span>
-                )}
-              </p>
-            </div>
-          </div>
+        {/* Main Content - No forced stretching */}
+        <div className="p-8 pt-0 space-y-8">
+          {/* Quick Stats Grid - 2x2 - Dynamic based on category type */}
+          {renderQuickStats(site, species, photos, selectedYear)}
 
           {/* Data Year Indicator */}
           {metrics?.year && (

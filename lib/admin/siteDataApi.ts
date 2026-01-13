@@ -297,6 +297,86 @@ export async function deleteSewageData(id: number): Promise<void> {
 }
 
 // ============================================================================
+// Community Data Types & API
+// ============================================================================
+
+export interface CommunityData {
+  id: number;
+  siteId: number;
+  site?: {
+    id: number;
+    name: string;
+    slug: string;
+    category?: { id: number; name: string; slug: string };
+  };
+  year: number;
+  data: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCommunityData {
+  siteId: number;
+  year: number;
+  data: Record<string, any>;
+}
+
+export async function listCommunityData(siteId?: number): Promise<CommunityData[]> {
+  const params = new URLSearchParams();
+  if (siteId) params.append('siteId', siteId.toString());
+
+  const response = await fetch(`${API_URL}/community-data?${params.toString()}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse<CommunityData[]>(response);
+}
+
+export async function getCommunityData(id: number): Promise<CommunityData> {
+  const response = await fetch(`${API_URL}/community-data/${id}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse<CommunityData>(response);
+}
+
+export async function createCommunityData(data: CreateCommunityData): Promise<CommunityData> {
+  const response = await fetch(`${API_URL}/community-data`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<CommunityData>(response);
+}
+
+export async function upsertCommunityData(data: CreateCommunityData): Promise<CommunityData> {
+  const response = await fetch(`${API_URL}/community-data/upsert`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<CommunityData>(response);
+}
+
+export async function updateCommunityData(id: number, data: Partial<CreateCommunityData>): Promise<CommunityData> {
+  const response = await fetch(`${API_URL}/community-data/${id}`, {
+    method: 'PATCH',
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<CommunityData>(response);
+}
+
+export async function deleteCommunityData(id: number): Promise<void> {
+  const response = await fetch(`${API_URL}/community-data/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to delete' }));
+    throw new Error(error.message);
+  }
+}
+
+// ============================================================================
 // Utility Functions
 // ============================================================================
 

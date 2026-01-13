@@ -6,7 +6,7 @@ import { API_URL, getHeaders, getMultipartHeaders, handleResponse } from '../uti
 // Types
 // ============================================================================
 
-export type PhotoCategory = 'EVENT' | 'SITE' | 'SPECIES';
+export type PhotoCategory = 'EVENT' | 'SITE' | 'SPECIES' | 'COMMUNITY';
 
 export interface Photo {
   id: number;
@@ -158,6 +158,7 @@ export function getCategoryLabel(category: PhotoCategory): string {
     case 'EVENT': return 'Event';
     case 'SITE': return 'Site';
     case 'SPECIES': return 'Species';
+    case 'COMMUNITY': return 'Community';
     default: return category;
   }
 }
@@ -167,6 +168,7 @@ export function getCategoryColor(category: PhotoCategory): string {
     case 'EVENT': return 'bg-blue-100 text-blue-800';
     case 'SITE': return 'bg-green-100 text-green-800';
     case 'SPECIES': return 'bg-purple-100 text-purple-800';
+    case 'COMMUNITY': return 'bg-amber-100 text-amber-800';
     default: return 'bg-gray-100 text-gray-800';
   }
 }

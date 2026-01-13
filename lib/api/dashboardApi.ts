@@ -4,12 +4,10 @@ import type {
   HierarchyTree,
   Site,
   YearlyMetrics,
-  AggregateMetrics,
   SiteBoundary,
   Raster,
   Photo,
   SiteSpecies,
-  EntityType,
   CategoryType,
 } from '@/components/dashboard/types';
 
@@ -67,7 +65,7 @@ export async function listSites(filters?: SiteFilters): Promise<Site[]> {
   return handleResponse<Site[]>(response);
 }
 
-export async function getSite(id: number, includeMetrics = false): Promise<Site> {
+export async function getSite(id: number, includeMetrics = true): Promise<Site> {
   const params = new URLSearchParams();
   if (includeMetrics) params.append('includeMetrics', 'true');
 
@@ -155,52 +153,6 @@ export function getRasterTileUrl(rasterId: string): string {
 }
 
 // ============================================================================
-// Aggregate Metrics API
-// ============================================================================
-
-export interface AggregateMetricsFilters {
-  entityType?: EntityType;
-  organizationId?: number;
-  regionId?: number;
-  categoryId?: number;
-  metricType?: string;
-  year?: number;
-}
-
-export async function getAggregateMetrics(filters?: AggregateMetricsFilters): Promise<AggregateMetrics[]> {
-  const params = new URLSearchParams();
-  if (filters?.entityType) params.append('entityType', filters.entityType);
-  if (filters?.organizationId) params.append('organizationId', filters.organizationId.toString());
-  if (filters?.regionId) params.append('regionId', filters.regionId.toString());
-  if (filters?.categoryId) params.append('categoryId', filters.categoryId.toString());
-  if (filters?.metricType) params.append('metricType', filters.metricType);
-  if (filters?.year) params.append('year', filters.year.toString());
-
-  const response = await fetch(`${API_URL}/aggregate-metrics?${params.toString()}`, {
-    headers: getHeaders(),
-  });
-  return handleResponse<AggregateMetrics[]>(response);
-}
-
-export async function getGroupedAggregateMetrics(filters?: {
-  entityType?: EntityType;
-  organizationId?: number;
-  regionId?: number;
-  categoryId?: number;
-}): Promise<Record<string, AggregateMetrics[]>> {
-  const params = new URLSearchParams();
-  if (filters?.entityType) params.append('entityType', filters.entityType);
-  if (filters?.organizationId) params.append('organizationId', filters.organizationId.toString());
-  if (filters?.regionId) params.append('regionId', filters.regionId.toString());
-  if (filters?.categoryId) params.append('categoryId', filters.categoryId.toString());
-
-  const response = await fetch(`${API_URL}/aggregate-metrics/grouped?${params.toString()}`, {
-    headers: getHeaders(),
-  });
-  return handleResponse<Record<string, AggregateMetrics[]>>(response);
-}
-
-// ============================================================================
 // Photos API
 // ============================================================================
 
@@ -208,7 +160,7 @@ export async function getPhotos(filters?: {
   siteId?: number;
   speciesId?: number;
   year?: number;
-  category?: 'EVENT' | 'SITE' | 'SPECIES';
+  category?: 'EVENT' | 'SITE' | 'SPECIES' | 'COMMUNITY';
 }): Promise<Photo[]> {
   const params = new URLSearchParams();
   if (filters?.siteId) params.append('siteId', filters.siteId.toString());

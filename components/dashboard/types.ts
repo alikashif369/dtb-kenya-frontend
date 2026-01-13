@@ -71,7 +71,51 @@ export interface Site {
   siteType: SiteType;
   infrastructure?: string;
   yearlyMetrics?: YearlyMetrics[];
+  plantationData?: PlantationData | null;
+  solarData?: SolarData | null;
+  wasteData?: WasteData[];
+  sewageData?: SewageData[];
+  communityData?: CommunityData | null;
   deletedAt?: string | null;
+}
+
+export interface PlantationData {
+  id: number;
+  siteId: number;
+  plants: number;
+  species: string[];
+}
+
+export interface SolarData {
+  id: number;
+  siteId: number;
+  installationYear: number;
+  capacityKwh: number;
+  quarterlyProduction: Record<string, number>;
+}
+
+export interface WasteData {
+  id: number;
+  siteId: number;
+  year: number;
+  organicWaste: number;
+  compostReceived: number;
+  methaneRecovered?: number;
+}
+
+export interface SewageData {
+  id: number;
+  siteId: number;
+  year: number;
+  recoveryRatio: number;
+  methaneSaved: number;
+}
+
+export interface CommunityData {
+  id: number;
+  siteId: number;
+  year: number;
+  data: Record<string, any>;
 }
 
 // ============================================================================
@@ -93,46 +137,6 @@ export interface YearlyMetrics {
   solarPanels: number;
   baseRasterId?: string;
   classifiedRasterId?: string;
-}
-
-export type MetricType =
-  | 'PLANTATION_TARGET'
-  | 'PLANTATION_ACHIEVED'
-  | 'PLANTATION_STEWARDSHIP_TOTAL'
-  | 'PLANTATION_STEWARDSHIP_ACTIVE'
-  | 'SOLAR_CAPACITY_TOTAL'
-  | 'SOLAR_PRODUCTION_YEARLY'
-  | 'SOLAR_PRODUCTION_QUARTERLY'
-  | 'COMMUNITY_STOVES'
-  | 'COMMUNITY_SEEDS_DISTRIBUTED'
-  | 'COMMUNITY_SEEDS_SOLD'
-  | 'COMMUNITY_SOLAR_GEYSERS'
-  | 'WASTE_ORGANIC_COLLECTED'
-  | 'WASTE_COMPOST_PRODUCED'
-  | 'WASTE_METHANE_RECOVERED'
-  | 'SEWAGE_RECOVERY_RATIO'
-  | 'SEWAGE_METHANE_SAVED'
-  | 'CUSTOM';
-
-export type EntityType = 'ORGANIZATION' | 'REGION' | 'CATEGORY';
-
-export interface AggregateMetrics {
-  id: number;
-  entityType: EntityType;
-  organizationId?: number;
-  regionId?: number;
-  categoryId?: number;
-  metricType: MetricType;
-  targetValue?: number;
-  achievedValue?: number;
-  unit?: string;
-  label?: string;
-  description?: string;
-  startYear?: number;
-  endYear?: number;
-  year?: number;
-  displayOrder?: number;
-  details?: Record<string, unknown>;
 }
 
 // ============================================================================
@@ -181,7 +185,7 @@ export interface Photo {
   id: string;
   siteId?: number;
   speciesId?: number;
-  category: 'EVENT' | 'SITE' | 'SPECIES';
+  category: 'EVENT' | 'SITE' | 'SPECIES' | 'COMMUNITY';
   year?: number;
   minioUrl: string;
   caption?: string;
@@ -242,7 +246,6 @@ export interface DashboardState {
   data: {
     hierarchy: HierarchyTree | null;
     currentMetrics: YearlyMetrics | null;
-    aggregateMetrics: AggregateMetrics[];
     siteBoundaries: SiteBoundary[];
     photos: Photo[];
     species: SiteSpecies[];
@@ -341,11 +344,6 @@ export interface LandCoverChartProps {
   loading?: boolean;
 }
 
-export interface CategoryMetricsProps {
-  metrics: AggregateMetrics[];
-  categoryType?: CategoryType;
-  loading?: boolean;
-}
 
 export interface SiteDetailsPanelProps {
   site: Site | null;

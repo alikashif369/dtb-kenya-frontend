@@ -15,12 +15,10 @@ export default function DashboardPage() {
     hierarchy,
     selectedSite,
     yearlyMetrics,
-    aggregateMetrics,
     categorySummaries,
     boundaries,
     photos,
     species,
-    categoryType,
 
     // Map state
     showVectors,
@@ -136,13 +134,13 @@ export default function DashboardPage() {
         yearlyMetrics={yearlyMetrics}
         siteSpecies={species}
         sitePhotos={photos}
-        aggregateMetrics={aggregateMetrics}
         categorySummaries={categorySummaries}
-        categoryType={categoryType}
         filters={filters}
+        selectedYear={selectedYear}
+        availableYears={availableYears}
+        onYearChange={setYear}
         loading={{
           metrics: loading.metrics,
-          aggregateMetrics: loading.aggregateMetrics,
           categorySummaries: loading.categorySummaries,
           species: loading.species,
           photos: loading.photos,

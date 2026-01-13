@@ -13,7 +13,6 @@ export { default as YearSlider } from "./YearSlider";
 
 // Chart and visualization components
 export { default as LandCoverChart } from "./LandCoverChart";
-export { default as CategoryMetrics } from "./CategoryMetrics";
 
 // Summary and detail components
 export { default as SummarySection } from "./SummarySection";

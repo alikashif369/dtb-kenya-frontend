@@ -3,11 +3,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type {
   DashboardFilters,
-  DashboardState,
   HierarchyTree,
   Site,
   YearlyMetrics,
-  AggregateMetrics,
   SiteBoundary,
   Photo,
   SiteSpecies,
@@ -17,11 +15,9 @@ import {
   getHierarchyTree,
   getSite,
   getSiteMetrics,
-  getAggregateMetrics,
   getPhotos,
   getSiteSpecies,
   getRasterTileUrl,
-  listRasters,
   getCategorySummaries,
   type CategorySummary,
 } from "@/lib/api/dashboardApi";
@@ -43,7 +39,6 @@ const initialLoadingState = {
   rasters: false,
   photos: false,
   species: false,
-  aggregateMetrics: false,
   categorySummaries: false,
 };
 
@@ -53,7 +48,6 @@ export interface UseDashboardReturn {
   hierarchy: HierarchyTree | null;
   selectedSite: Site | null;
   yearlyMetrics: YearlyMetrics | null;
-  aggregateMetrics: AggregateMetrics[];
   categorySummaries: CategorySummary[];
   boundaries: SiteBoundary[];
   photos: Photo[];
@@ -94,7 +88,6 @@ export function useDashboard(): UseDashboardReturn {
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const [yearlyMetrics, setYearlyMetrics] = useState<YearlyMetrics | null>(null);
   const [allYearlyMetrics, setAllYearlyMetrics] = useState<YearlyMetrics[]>([]);
-  const [aggregateMetrics, setAggregateMetrics] = useState<AggregateMetrics[]>([]);
   const [categorySummaries, setCategorySummaries] = useState<CategorySummary[]>([]);
   const [boundaries, setBoundaries] = useState<SiteBoundary[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -326,51 +319,6 @@ export function useDashboard(): UseDashboardReturn {
     loadRasters();
   }, [filters.siteId, selectedYear, allYearlyMetrics]);
 
-  // Load aggregate metrics when filters change
-  useEffect(() => {
-    async function loadAggregateMetrics() {
-      try {
-        setLoading((prev) => ({ ...prev, aggregateMetrics: true }));
-
-        let entityType: "ORGANIZATION" | "REGION" | "CATEGORY" | undefined;
-        let entityId: number | undefined;
-
-        if (filters.categoryId !== null) {
-          entityType = "CATEGORY";
-          entityId = filters.categoryId;
-        } else if (filters.regionId !== null) {
-          entityType = "REGION";
-          entityId = filters.regionId;
-        } else if (filters.organizationId !== null) {
-          entityType = "ORGANIZATION";
-          entityId = filters.organizationId;
-        }
-
-        if (entityType && entityId) {
-          const metrics = await getAggregateMetrics({
-            entityType,
-            [entityType === "ORGANIZATION"
-              ? "organizationId"
-              : entityType === "REGION"
-              ? "regionId"
-              : "categoryId"]: entityId,
-          });
-          setAggregateMetrics(metrics);
-        } else {
-          // Load organization-level metrics if no filter is set
-          const metrics = await getAggregateMetrics({ entityType: "ORGANIZATION" });
-          setAggregateMetrics(metrics);
-        }
-      } catch (err) {
-        console.error("Failed to load aggregate metrics:", err);
-      } finally {
-        setLoading((prev) => ({ ...prev, aggregateMetrics: false }));
-      }
-    }
-
-    loadAggregateMetrics();
-  }, [filters.organizationId, filters.regionId, filters.categoryId]);
-
   // Load category summaries when filters change
   useEffect(() => {
     async function loadCategorySummaries() {
@@ -533,7 +481,6 @@ export function useDashboard(): UseDashboardReturn {
     hierarchy,
     selectedSite,
     yearlyMetrics,
-    aggregateMetrics,
     categorySummaries,
     boundaries,
     photos,

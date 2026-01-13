@@ -173,6 +173,12 @@ export default function AdminDashboard() {
             title="Sewage Data"
             description="Water treatment and sewage metrics"
           />
+          <ModuleCard
+            href="/admin/community-data"
+            icon={<Users className="w-5 h-5" />}
+            title="Community Data"
+            description="Manage community initiative impact and metrics"
+          />
         </ModuleSection>
       </motion.div>
 
@@ -215,12 +221,12 @@ export default function AdminDashboard() {
             title="User Management"
             description="Manage user accounts and permissions"
           />
-          <ModuleCard
+          {/* <ModuleCard
             href="/admin/aggregate-metrics"
             icon={<BarChart3 className="w-5 h-5" />}
             title="Aggregate Metrics"
             description="View aggregated metrics across sites"
-          />
+          /> */}
           <ModuleCard
             href="/admin/category-summaries"
             icon={<FileText className="w-5 h-5" />}

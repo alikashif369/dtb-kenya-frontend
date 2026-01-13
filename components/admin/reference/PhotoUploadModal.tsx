@@ -115,8 +115,8 @@ export default function PhotoUploadModal({
       newErrors.file = 'Please select a photo to upload';
     }
 
-    if ((formData.category === 'EVENT' || formData.category === 'SITE') && !formData.siteId) {
-      newErrors.siteId = 'Site is required for Event/Site photos';
+    if ((formData.category === 'EVENT' || formData.category === 'SITE' || formData.category === 'COMMUNITY') && !formData.siteId) {
+      newErrors.siteId = 'Site is required for Event/Site/Community photos';
     }
 
     if (formData.category === 'SPECIES' && !formData.speciesId) {
@@ -266,7 +266,7 @@ export default function PhotoUploadModal({
         {/* Category Selection */}
         <FormField label="Category" htmlFor="photo-category" required>
           <div className="flex gap-2">
-            {(['EVENT', 'SITE', 'SPECIES'] as PhotoCategory[]).map((cat) => (
+            {(['EVENT', 'SITE', 'SPECIES', 'COMMUNITY'] as PhotoCategory[]).map((cat) => (
               <button
                 key={cat}
                 type="button"
@@ -277,7 +277,7 @@ export default function PhotoUploadModal({
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 }`}
               >
-                {cat === 'EVENT' ? 'Event' : cat === 'SITE' ? 'Site' : 'Species'}
+                {cat === 'EVENT' ? 'Event' : cat === 'SITE' ? 'Site' : cat === 'SPECIES' ? 'Species' : 'Community'}
               </button>
             ))}
           </div>
@@ -285,7 +285,7 @@ export default function PhotoUploadModal({
 
         {/* Site/Species Selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {(formData.category === 'EVENT' || formData.category === 'SITE') && (
+          {(formData.category === 'EVENT' || formData.category === 'SITE' || formData.category === 'COMMUNITY') && (
             <FormField label="Site" htmlFor="photo-site" required error={errors.siteId}>
               <select
                 id="photo-site"
@@ -323,7 +323,7 @@ export default function PhotoUploadModal({
             </FormField>
           )}
 
-          {(formData.category === 'EVENT' || formData.category === 'SITE') && (
+          {(formData.category === 'EVENT' || formData.category === 'SITE' || formData.category === 'COMMUNITY') && (
             <FormField label="Year" htmlFor="photo-year">
               <input
                 id="photo-year"

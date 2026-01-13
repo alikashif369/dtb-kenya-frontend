@@ -3,18 +3,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import LandCoverChart from "./LandCoverChart";
-import CategoryMetrics from "./CategoryMetrics";
+import SiteMetrics from "./SiteMetrics";
 import CategorySummaryDisplay from "./CategorySummaryDisplay";
 import SiteDetailsPanel from "./SiteDetailsPanel";
 import SiteVisuals from "./SiteVisuals";
+import SolarProductionChart from "./SolarProductionChart";
+import WasteSewageMetrics from "./WasteSewageMetrics";
+import CommunityMetrics from "./CommunityMetrics";
 import type {
   Site,
   YearlyMetrics,
-  AggregateMetrics,
   SiteSpecies,
   Photo,
-  CategoryType,
   DashboardFilters,
+  CategoryType,
 } from "./types";
 import type { CategorySummary } from "@/lib/api/dashboardApi";
 
@@ -25,16 +27,17 @@ interface SummarySectionProps {
   siteSpecies: SiteSpecies[];
   sitePhotos: Photo[];
 
-  // Aggregate data (for org/region/category level)
-  aggregateMetrics: AggregateMetrics[];
+  // Category summaries (for org/region/category level text descriptions)
   categorySummaries: CategorySummary[];
-  categoryType?: CategoryType;
   filters: DashboardFilters;
+
+  // Year selection (passed from map timeline control)
+  selectedYear: number | null;
+  availableYears: number[];
 
   // Loading states
   loading: {
     metrics: boolean;
-    aggregateMetrics: boolean;
     categorySummaries: boolean;
     species: boolean;
     photos: boolean;
@@ -44,22 +47,91 @@ interface SummarySectionProps {
   onSiteClose?: () => void;
 }
 
+// Helper function to get category-specific description
+function getCategoryDescription(site: Site): string {
+  const categoryType = site.category?.type as CategoryType;
+  const siteName = site.name;
+
+  switch (categoryType) {
+    case "SOLAR":
+      return `Solar energy production metrics and installation details for the ${siteName} solar installation.`;
+    case "WASTE":
+      return `Organic waste processing and composting analytics for the ${siteName} waste management facility.`;
+    case "SEWAGE":
+      return `Water recovery and treatment metrics for the ${siteName} sewage treatment facility.`;
+    case "COMMUNITY":
+      return `Community engagement and social impact metrics for the ${siteName} community initiative.`;
+    case "RESTORATION":
+    case "PLANTATION":
+    default:
+      return `Detailed environmental metrics, biodiversity status, and field documentation for the ${siteName} conservation site.`;
+  }
+}
+
+// Helper to check if category type needs plantation/conservation visuals
+function isPlantationType(categoryType: CategoryType | undefined): boolean {
+  return categoryType === "PLANTATION" || categoryType === "RESTORATION" || !categoryType;
+}
+
 export default function SummarySection({
   selectedSite,
   yearlyMetrics,
   siteSpecies,
   sitePhotos,
-  aggregateMetrics,
   categorySummaries,
-  categoryType,
   filters,
+  selectedYear,
+  availableYears,
   loading,
   onSiteClose,
 }: SummarySectionProps) {
   const hasSingleSite = selectedSite !== null;
+  const categoryType = selectedSite?.category?.type as CategoryType | undefined;
 
   // Determine if we're at the top level (no filters selected)
   const isTopLevel = !filters.organizationId && !filters.regionId && !filters.categoryId;
+
+  // Determine what type of site this is
+  const isPlantation = isPlantationType(categoryType);
+  const isSolar = categoryType === "SOLAR";
+  const isWasteOrSewage = categoryType === "WASTE" || categoryType === "SEWAGE";
+  const isCommunity = categoryType === "COMMUNITY";
+
+  // For Solar sites, extract available years from quarterly production data (handle Q1_2023 and 2023_Q1)
+  const solarYears = React.useMemo(() => {
+    if (!isSolar || !selectedSite?.solarData?.quarterlyProduction) return [];
+
+    const years = new Set<number>();
+    Object.keys(selectedSite.solarData.quarterlyProduction).forEach(key => {
+      const parts = key.split('_');
+      // Handle both formats: 2023_Q1 or Q1_2023
+      const year = parts[0].startsWith('Q') ? parseInt(parts[1]) : parseInt(parts[0]);
+      if (!isNaN(year)) years.add(year);
+    });
+    return Array.from(years).sort((a, b) => a - b);
+  }, [isSolar, selectedSite?.solarData?.quarterlyProduction]);
+
+  // For Waste sites, extract available years from wasteData
+  const wasteYears = React.useMemo(() => {
+    if (categoryType !== 'WASTE' || !selectedSite?.wasteData) return [];
+    return [...new Set(selectedSite.wasteData.map(d => d.year))].sort((a, b) => a - b);
+  }, [categoryType, selectedSite?.wasteData]);
+
+  // For Sewage sites, extract available years from sewageData
+  const sewageYears = React.useMemo(() => {
+    if (categoryType !== 'SEWAGE' || !selectedSite?.sewageData) return [];
+    return [...new Set(selectedSite.sewageData.map(d => d.year))].sort((a, b) => a - b);
+  }, [categoryType, selectedSite?.sewageData]);
+
+  // Use category-specific years if available, otherwise use available years from props
+  const effectiveYears = React.useMemo(() => {
+    if (isSolar && solarYears.length > 0) return solarYears;
+    if (categoryType === 'WASTE' && wasteYears.length > 0) return wasteYears;
+    if (categoryType === 'SEWAGE' && sewageYears.length > 0) return sewageYears;
+    return availableYears;
+  }, [isSolar, solarYears, categoryType, wasteYears, sewageYears, availableYears]);
+
+  const effectiveSelectedYear = selectedYear || (effectiveYears.length > 0 ? effectiveYears[effectiveYears.length - 1] : null);
 
   return (
     <motion.div
@@ -81,73 +153,96 @@ export default function SummarySection({
                 {hasSingleSite ? selectedSite?.name : "Summary Overview"}
               </h2>
             </div>
-            {hasSingleSite && (
+            {hasSingleSite && selectedSite && (
               <p className="text-gray-400 text-sm max-w-md font-medium leading-relaxed">
-                Detailed environmental metrics, biodiversity status, and field documentation for the {selectedSite?.name} conservation site.
+                {getCategoryDescription(selectedSite)}
               </p>
             )}
           </div>
         </div>
 
-        {hasSingleSite ? (
-          // Single site view - Optimized Proportional Layout
+        {hasSingleSite && selectedSite ? (
+          // Single site view - Dynamic based on category type
           <div className="space-y-16">
-            {/* Top Row: Visual Intelligence Hub */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-              {/* Left Side: Land Cover Chart (7 cols) */}
-              <div className="lg:col-span-7 h-full">
-                <LandCoverChart
-                  metrics={yearlyMetrics}
-                  loading={loading.metrics}
-                  showTitle={true}
-                />
-              </div>
+            {/* Plantation: Show Land Cover Chart + Site Details Panel */}
+            {isPlantation && (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                {/* Left Side: Land Cover Chart (7 cols) */}
+                <div className="lg:col-span-7 h-full">
+                  <LandCoverChart
+                    metrics={yearlyMetrics}
+                    loading={loading.metrics}
+                    showTitle={true}
+                  />
+                </div>
 
-              {/* Right Side: Site Details (5 cols) */}
-              <div className="lg:col-span-5 h-full">
-                <SiteDetailsPanel
-                  site={selectedSite}
-                  metrics={yearlyMetrics}
+                {/* Right Side: Site Details (5 cols) */}
+                <div className="lg:col-span-5 h-full">
+                  <SiteDetailsPanel
+                    site={selectedSite}
+                    metrics={yearlyMetrics}
+                    species={siteSpecies}
+                    photos={sitePhotos}
+                    selectedYear={effectiveSelectedYear}
+                    loading={loading.metrics || loading.species}
+                    onClose={onSiteClose}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Solar/Waste/Sewage/Community: Full Width Chart (NO Timeline, NO Sidebar) */}
+            {(isSolar || isWasteOrSewage || isCommunity) && (
+              <div>
+                {isSolar && (
+                  <SolarProductionChart
+                    site={selectedSite}
+                    selectedYear={effectiveSelectedYear}
+                    loading={loading.metrics}
+                  />
+                )}
+                {isWasteOrSewage && (
+                  <WasteSewageMetrics
+                    site={selectedSite}
+                    selectedYear={effectiveSelectedYear}
+                    loading={loading.metrics}
+                  />
+                )}
+                {isCommunity && (
+                  <CommunityMetrics
+                    site={selectedSite}
+                    photos={sitePhotos}
+                    selectedYear={effectiveSelectedYear}
+                    loading={loading.metrics || loading.photos}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Middle Row: Visual Documentation & Biodiversity - Only for Plantation/Restoration */}
+            {isPlantation && (
+              <div className="pt-12 border-t border-gray-50">
+                <SiteVisuals
                   species={siteSpecies}
                   photos={sitePhotos}
-                  loading={loading.metrics || loading.species}
-                  onClose={onSiteClose}
-                />
-              </div>
-            </div>
-
-            {/* Middle Row: Visual Documentation & Biodiversity */}
-            <div className="pt-12 border-t border-gray-50">
-               <SiteVisuals 
-                 species={siteSpecies} 
-                 photos={sitePhotos} 
-                 siteName={selectedSite.name} 
-                 loading={loading.photos || loading.species}
-               />
-            </div>
-
-            {/* Bottom Row: Aggregate Metrics (Optional if data exists) */}
-            {aggregateMetrics.length > 0 && (
-              <div className="pt-16 border-t border-gray-50">
-                <CategoryMetrics
-                  metrics={aggregateMetrics}
-                  categoryType={categoryType}
-                  loading={loading.aggregateMetrics}
-                  compact={false}
+                  siteName={selectedSite.name}
+                  loading={loading.photos || loading.species}
                 />
               </div>
             )}
+
+            {/* Bottom Row: Site Specific Metrics */}
+            <div className="pt-16 border-t border-gray-50">
+                <SiteMetrics
+                  site={selectedSite}
+                  selectedYear={effectiveSelectedYear}
+                  loading={loading.metrics}
+                />
+            </div>
           </div>
         ) : (
-          // Multi-site view - show aggregate metrics
+          // Multi-site view - show category summaries
           <div className="space-y-8">
-            <CategoryMetrics
-              metrics={aggregateMetrics}
-              categoryType={categoryType}
-              loading={loading.aggregateMetrics}
-              compact={false}
-            />
-
             {/* Category Summaries - Text descriptions for org/region/category */}
             <CategorySummaryDisplay
               summaries={categorySummaries}
@@ -155,8 +250,7 @@ export default function SummarySection({
             />
 
             {/* Empty state handling */}
-            {!loading.aggregateMetrics && !loading.categorySummaries &&
-             aggregateMetrics.length === 0 && categorySummaries.length === 0 && (
+            {!loading.categorySummaries && categorySummaries.length === 0 && (
               <div className="bg-gradient-to-br from-white to-stone-50/30 rounded-2xl border border-gray-100 shadow-sm p-10">
                 {isTopLevel ? (
                   // Default welcome text when no filters are selected
