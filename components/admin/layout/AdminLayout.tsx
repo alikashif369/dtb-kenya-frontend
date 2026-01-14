@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ToastContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { User, Search, LogOut, ChevronDown, Menu, X } from 'lucide-react';
+import { User, LogOut, ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 
 interface AdminLayoutProps {
@@ -126,18 +126,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   ))}
                 </nav>
 
-                {/* Right Actions: Search & User */}
+                {/* Right Actions: User */}
                 <div className="flex items-center gap-3 flex-shrink-0">
-                  {/* Search */}
-                  <div className="relative hidden lg:block">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#115e59]/40" />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="pl-10 pr-4 py-2.5 text-xs bg-white/80 border border-[#115e59]/10 rounded-full focus:outline-none focus:ring-2 focus:ring-[#b08d4b]/20 focus:border-[#b08d4b]/30 w-48 xl:w-56 transition-all duration-300 placeholder:text-[#115e59]/40"
-                    />
-                  </div>
-
                   {/* Dashboard Link */}
                   <Link
                     href="/dashboard"
