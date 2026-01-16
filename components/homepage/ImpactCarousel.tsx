@@ -41,7 +41,7 @@ const impactItems = [
 
 export default function ImpactCarousel() {
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section id="initiatives" className="py-24 bg-white overflow-hidden">
       <div className="mb-12 px-6 max-w-[1400px] mx-auto">
         <span className="text-serena-gold text-sm font-bold uppercase tracking-[0.3em] mb-4 block">
           Our Pillars of Impact

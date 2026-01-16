@@ -24,11 +24,11 @@ const slides = [
   },
   {
     id: 2,
-    image: "/bg-main.jpg", 
+    image: "/bg-main.jpg",
     title: "A Greener Tomorrow, Today",
     subtitle: "Leading the way in sustainable tourism across Pakistan's most breathtaking landscapes.",
     cta: "View Our Sites",
-    link: "#sites"
+    link: "/dashboard"
   }
 ];
 

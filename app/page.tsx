@@ -44,7 +44,7 @@ export default function HomePage() {
       <SpeciesShowcase />
 
       {/* Partners Section (Reusing existing components with wrappers for consistency) */}
-      <div className="py-24 bg-white">
+      <div id="partners" className="py-24 bg-white">
          <div className="text-center mb-16">
             <span className="text-serena-gold text-sm font-bold uppercase tracking-[0.3em] block mb-4">Collaborations</span>
             <h2 className="text-4xl font-serif font-bold text-green-950">Partnerships</h2>
