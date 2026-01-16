@@ -77,6 +77,9 @@ export default function DashboardMap({
     onSiteClickRef.current = onSiteClick;
   }, [onSiteClick]);
 
+  // Ref to always have the latest getVectorStyle (avoids stale closure in Select interaction)
+  const getVectorStyleRef = useRef<((feature: Feature<Geometry>, selected?: boolean) => Style) | null>(null);
+
   // Style for vector features
   const getVectorStyle = useCallback(
     (feature: Feature<Geometry>, selected: boolean = false) => {
@@ -125,6 +128,11 @@ export default function DashboardMap({
     },
     [selectedSiteId, baseLayer]
   );
+
+  // Keep the ref updated with the latest getVectorStyle
+  useEffect(() => {
+    getVectorStyleRef.current = getVectorStyle;
+  }, [getVectorStyle]);
 
   // Initialize map (no scale, no attribution visible)
   useEffect(() => {
@@ -196,7 +204,8 @@ export default function DashboardMap({
     const selectInteraction = new Select({
       condition: click,
       layers: [vectorLayer],
-      style: (feature) => getVectorStyle(feature as Feature<Geometry>, true),
+      // Use ref to always get the latest style function (avoids stale closure)
+      style: (feature) => getVectorStyleRef.current?.(feature as Feature<Geometry>, true) || undefined,
     });
     selectInteractionRef.current = selectInteraction;
     map.addInteraction(selectInteraction);
@@ -217,13 +226,18 @@ export default function DashboardMap({
     };
   }, []);
 
+  // Update styles when selection or base layer changes
   useEffect(() => {
     if (vectorLayerRef.current) {
       vectorLayerRef.current.setStyle((feature) =>
         getVectorStyle(feature as Feature<Geometry>, false)
       );
+      // Force re-render to ensure text labels are displayed correctly
+      vectorLayerRef.current.changed();
     }
     if (selectInteractionRef.current) {
+      // Clear selected features so they re-render with updated layer style
+      // The Select interaction's style uses getVectorStyleRef which is already updated
       selectInteractionRef.current.getFeatures().clear();
     }
   }, [selectedSiteId, baseLayer, getVectorStyle]);
@@ -289,6 +303,10 @@ export default function DashboardMap({
           duration: 500,
         });
       }
+
+      // Force layer re-render to ensure text labels are displayed correctly
+      // This is needed after adding features, especially when styles have been updated
+      vectorLayerRef.current.changed();
     } catch (error) {
       console.error("[DashboardMap] Error adding boundaries:", error);
     }
@@ -435,10 +453,10 @@ export default function DashboardMap({
                 </div>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                   {[
-                    { color: "#166534", label: "Canopy" },
-                    { color: "#4ade80", label: "Green" },
-                    { color: "#0ea5e9", label: "Water" },
-                    { color: "#94a3b8", label: "Built" },
+                    { color: "#006e33", label: "Tree Canopy" },
+                    { color: "#996000", label: "Wet Land" },
+                    { color: "#f5deb3", label: "Barren Land" },
+                    { color: "#009a17", label: "Green Area" },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center gap-1.5">
                       <div
