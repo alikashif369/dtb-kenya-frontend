@@ -66,7 +66,7 @@ function StatCard({
       </div>
 
       <div className="relative z-10">
-        <p className="text-4xl font-serif text-[#115e59] leading-none tracking-tight font-bold">
+        <p className="text-4xl font-serif text-[#0f3f3c] leading-none tracking-tight font-bold">
           {typeof value === 'number' ? formatNumber(value) : value}
           {unit && (
             <span className="text-base font-sans font-extrabold text-gray-400 ml-3 align-middle uppercase tracking-[0.15em]">
@@ -80,7 +80,7 @@ function StatCard({
 }
 
 export default function SiteMetrics({ site, selectedYear, loading = false }: SiteMetricsProps) {
-  const color = categoryColors[site.category?.type || "PLANTATION"] || "#115e59";
+  const color = categoryColors[site.category?.type || "PLANTATION"] || "#0f3f3c";
 
   if (loading) {
      return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
@@ -195,7 +195,7 @@ export default function SiteMetrics({ site, selectedYear, loading = false }: Sit
     <div className="space-y-8">
       <div className="flex items-center gap-3">
         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-        <h3 className="text-xl font-serif font-bold text-[#115e59] tracking-tight">
+        <h3 className="text-xl font-serif font-bold text-[#0f3f3c] tracking-tight">
           Performance Indicators
         </h3>
       </div>

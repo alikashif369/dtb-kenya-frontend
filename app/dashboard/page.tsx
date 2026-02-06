@@ -1,17 +1,18 @@
 import { Metadata } from "next";
 import DashboardPage from "@/components/dashboard/DashboardPage";
+import PremiumNavbar from "@/components/homepage/PremiumNavbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Serena Green",
+  title: "Dashboard | DTB Kenya",
   description:
-    "Interactive GIS dashboard for monitoring Serena Hotels' environmental initiatives including plantations, solar energy, and waste management across all sites.",
+    "Interactive GIS dashboard for monitoring Diamond Trust Bank Kenya's tree planting initiatives across schools and sites.",
   keywords: [
-    "Serena Hotels",
+    "DTB Kenya",
     "GIS",
     "environmental monitoring",
-    "plantation",
-    "solar energy",
+    "tree planting",
+    "schools",
     "sustainability",
   ],
 };
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export default function Dashboard() {
   return (
     <>
+      {/* <PremiumNavbar /> */}
       <main>
         <DashboardPage />
       </main>

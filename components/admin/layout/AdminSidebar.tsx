@@ -144,12 +144,12 @@ export default function AdminSidebar({ collapsed = false, onCollapsedChange }: A
       <div className="flex items-center justify-between px-5 py-6 border-b border-gray-100">
         {!collapsed && (
           <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-full bg-green-950 flex items-center justify-center text-serena-gold font-serif font-bold text-lg">
-                S
+             <div className=\"w-8 h-8 rounded-full bg-[#F67910] flex items-center justify-center text-white font-serif font-bold text-lg\">
+                D
              </div>
              <div>
-                <h2 className="text-lg font-serif font-bold text-green-950 tracking-wide">Admin Panel</h2>
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-medium">Serena Green</p>
+                <h2 className=\"text-lg font-serif font-bold text-[#F67910] tracking-wide\">Admin Panel</h2>
+                <p className=\"text-[10px] text-gray-400 uppercase tracking-widest font-medium\">DTB Kenya</p>
              </div>
           </div>
         )}
@@ -262,7 +262,7 @@ export default function AdminSidebar({ collapsed = false, onCollapsedChange }: A
            {!collapsed && (
                <div className="flex-1 min-w-0">
                    <p className="text-xs font-medium text-gray-900 truncate">Admin User</p>
-                   <p className="text-[10px] text-gray-400 truncate">admin@serena.com</p>
+                   <p className="text-[10px] text-gray-400 truncate">admin@dtbkenya.com</p>
                </div>
            )}
            {!collapsed && (

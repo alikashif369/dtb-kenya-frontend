@@ -40,7 +40,8 @@ function FilterSelect({
 
   return (
     <div className="flex flex-col gap-1 min-w-[140px] flex-1 max-w-[200px]">
-      <label className="text-[9px] font-bold text-[#115e59]/80 uppercase tracking-wider pl-1">
+      {/* Old Serena: text-[#115e59]/80 */}
+      <label className="text-[9px] font-bold text-[#0f3f3c]/80 uppercase tracking-wider pl-1">
         {label}
       </label>
       <div className="relative group">
@@ -56,13 +57,14 @@ function FilterSelect({
             pl-3 pr-8 py-2
             rounded-md text-xs font-semibold
             transition-all duration-200
-            focus:outline-none focus:ring-1 focus:ring-[#b08d4b] focus:border-[#b08d4b]
+            focus:outline-none focus:ring-1 focus:ring-[#e5003a] focus:border-[#e5003a]
             border shadow-sm
             ${isDisabled
               ? "bg-gray-50 text-gray-400 cursor-not-allowed border-gray-100"
               : value !== null
-                ? "bg-[#115e59] border-[#115e59] text-white"
-                : "bg-white border-gray-200 text-gray-700 hover:border-[#b08d4b]/50"
+                ? "bg-[#0f3f3c] border-[#0f3f3c] text-white"
+                /* Old: hover:border-[#b08d4b]/50 */
+                : "bg-white border-gray-200 text-gray-700 hover:border-[#e5003a]/50"
             }
           `}
         >
@@ -79,7 +81,7 @@ function FilterSelect({
           <ChevronDown
             className={`
               w-3.5 h-3.5 transition-transform duration-200
-              ${isDisabled ? "opacity-30" : value !== null ? "text-white/80" : "text-gray-400 group-hover:text-[#b08d4b]"}
+              ${isDisabled ? "opacity-30" : value !== null ? "text-white/80" : "text-gray-400 group-hover:text-[#e5003a]"}
             `}
           />
         </div>
@@ -244,7 +246,8 @@ export default function FilterRow({
           
           {/* Label / Brand Indicator */}
           <div className="hidden xl:flex flex-col justify-center pb-2.5 gap-1 min-w-fit">
-            <div className="flex items-center gap-2 text-[#115e59]">
+            {/* Old Serena: text-[#115e59] */}
+            <div className="flex items-center gap-2 text-[#0f3f3c]">
               <Filter className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-widest leading-none">Filters</span>
             </div>
@@ -319,7 +322,8 @@ export default function FilterRow({
         </div>
 
         {/* Mobile Filter Label (visible only on small screens) */}
-        <div className="xl:hidden flex items-center gap-2 mt-2 mb-1 text-[#115e59] opacity-60">
+        {/* Old Serena: text-[#115e59] */}
+        <div className="xl:hidden flex items-center gap-2 mt-2 mb-1 text-[#0f3f3c] opacity-60">
            <Filter className="w-3 h-3" />
            <span className="text-[10px] font-bold uppercase tracking-widest">Filter Sites</span>
         </div>

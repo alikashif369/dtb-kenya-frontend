@@ -47,19 +47,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   <Link href="/admin" className="flex items-center gap-4 group">
                     <div className="relative w-[180px] h-[50px] transition-all duration-500 group-hover:scale-105">
                       <Image
-                        src="/serena-logo.png"
-                        alt="Serena"
+                        src="/dtb-logo.png"
+                        alt="DTB Kenya"
                         fill
                         className="object-contain"
                         priority
                       />
                     </div>
-                    <div className="flex flex-col border-l border-[#115e59]/20 pl-4">
-                      <span className="text-[#115e59] text-lg font-serif font-bold tracking-wide leading-none">
+                    <div className="flex flex-col border-l border-[#F67910]/20 pl-4">
+                      <span className="text-[#F67910] text-lg font-serif font-bold tracking-wide leading-none">
                         ADMIN PANEL
                       </span>
-                      <span className="text-[#b08d4b] text-[10px] uppercase tracking-[0.3em] font-medium mt-1">
-                        Serena Green
+                      <span className="text-[#7959EF] text-[10px] uppercase tracking-[0.3em] font-medium mt-1">
+                        DTB Kenya
                       </span>
                     </div>
                   </Link>
@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             {user?.name || 'Super Admin'}
                           </p>
                           <p className="text-[10px] text-[#b08d4b] truncate">
-                            {user?.email || 'admin@serena.com'}
+                            {user?.email || 'admin@dtbkenya.com'}
                           </p>
                         </div>
                         <Link

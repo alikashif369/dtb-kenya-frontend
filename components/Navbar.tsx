@@ -39,33 +39,33 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ease-in-out font-sans ${
         scrolled
-          ? "bg-[#f8f6f1]/90 backdrop-blur-xl py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-[#115e59]/10"
-          : "bg-[#f8f6f1] py-5 border-b border-[#115e59]/5"
+          ? "bg-white/95 backdrop-blur-md py-3 shadow-sm border-b border-gray-100"
+          : "bg-white py-5 border-b border-gray-100"
       }`}
     >
       <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex items-center justify-between">
         
         {/* Brand Logo - Updated to match PremiumNavbar style */}
         <Link href="/" className="flex items-center gap-4 group">
-          <div className="relative w-[180px] h-[50px] transition-all duration-500 group-hover:scale-105">
+          <div className="relative w-[180px] h-[60px] transition-all duration-500 group-hover:scale-105">
              <Image
-              src="/serena-logo.png"
-              alt="Serena Green"
+              src="/dtb-logo-transparent.png"
+              alt="DTB Kenya"
               fill
               className="object-contain"
               priority
             />
           </div>
-          <div className="hidden lg:flex flex-col border-l border-[#115e59]/20 pl-4">
+          <div className="hidden lg:flex flex-col border-l border-green-950/20 pl-4">
              <span
-              className="text-[#115e59] text-lg font-serif font-bold tracking-wide leading-none"
+              className="text-green-950 text-lg font-serif font-bold tracking-wide leading-none"
             >
-              SERENA GREEN
+              DTB KENYA
             </span>
             <span
-              className="text-[#b08d4b] text-[10px] uppercase tracking-[0.3em] font-medium mt-1"
+              className="text-serena-gold text-[10px] uppercase tracking-[0.3em] font-medium mt-1"
             >
-              Analytics
+              Tree Planting Initiative
             </span>
           </div>
         </Link>
@@ -76,10 +76,10 @@ export default function Navbar() {
             <Link
               key={link.title}
               href={link.href}
-              className="relative text-[#115e59] text-xs uppercase tracking-[0.15em] font-bold hover:text-[#b08d4b] transition-colors duration-300 group py-2"
+              className="relative text-green-950/80 text-sm uppercase tracking-[0.15em] font-medium hover:text-serena-gold transition-colors duration-300 group py-2"
             >
               {link.title}
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#b08d4b] transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100" />
+              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-serena-gold transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100" />
             </Link>
           ))}
           
@@ -87,7 +87,7 @@ export default function Navbar() {
             href="/"
             className={`
               relative overflow-hidden group px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border shadow-md hover:shadow-lg hover:-translate-y-0.5
-              bg-[#115e59] text-white border-[#115e59] hover:bg-[#b08d4b] hover:border-[#b08d4b]
+              bg-green-950 text-white border-green-950 hover:bg-serena-gold hover:border-serena-gold
             `}
           >
             <span className="relative z-10 flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function Navbar() {
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-[#115e59] hover:text-[#b08d4b] transition-colors"
+          className="md:hidden p-2 text-green-950 hover:text-serena-gold transition-colors"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>

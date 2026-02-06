@@ -72,8 +72,9 @@ export default function DashboardPage() {
     return boundaries;
   }, [boundaries, filters]);
 
+  // Old Serena: bg-[var(--color-serena-sand)]
   return (
-    <div className="min-h-screen bg-[var(--color-serena-sand)] font-sans text-stone-800">
+    <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       {/* Error banner - Styled to match premium aesthetic */}
       {error && (
         <motion.div

@@ -5,8 +5,8 @@ import React from 'react';
 
 // You can optionally define metadata here for SEO
 export const metadata = {
-  title: 'Sign In | Serena Green',
-  description: 'Access the Serena Green project dashboard and personalized features.',
+  title: 'Sign In | DTB Kenya',
+  description: 'Access the DTB Kenya environmental monitoring dashboard and management features.',
 };
 
 /**

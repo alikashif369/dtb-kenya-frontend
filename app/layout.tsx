@@ -26,8 +26,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Serena Green",
-  description: "Sustainability Platform for Serena Hotels - Tracking environmental initiatives across plantations, solar energy, and waste management",
+  title: "DTB Kenya",
+  description: "Environmental Monitoring Platform for Diamond Trust Bank Kenya - Tracking tree planting initiatives and community-led conservation efforts across schools",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

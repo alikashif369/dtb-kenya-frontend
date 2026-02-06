@@ -25,7 +25,7 @@ export default function PremiumNavbar() {
     { title: "Home", href: "/" },
     { title: "Our Impact", href: "#impact" },
     { title: "Initiatives", href: "#initiatives" },
-    { title: "Partners", href: "#partners" },
+    // { title: "Partners", href: "#partners" }, // COMMENTED OUT - No partners yet
   ];
 
   return (
@@ -42,23 +42,26 @@ export default function PremiumNavbar() {
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative w-[180px] h-[60px] transition-all duration-500 group-hover:scale-105">
              <Image
-              src="/serena-logo.png"
-              alt="Serena Green"
+              src="/dtb-logo-transparent.png"
+              alt="DTB Kenya"
               fill
-              className="object-contain drop-shadow-sm" // Removed large drop-shadow
+              className="object-contain drop-shadow-sm"
               priority
             />
+            {/* Old Serena logo: src="/serena-logo.png" alt="Serena Green" */}
           </div>
           <div className="hidden lg:flex flex-col border-l border-green-950/20 pl-4">
              <span
               className="text-green-950 text-lg font-serif font-bold tracking-wide leading-none"
             >
-              SERENA GREEN
+              {/* SERENA GREEN */}
+              DTB KENYA
             </span>
             <span
               className="text-serena-gold text-[10px] uppercase tracking-[0.3em] font-medium mt-1"
             >
-              Conservation
+              {/* Conservation */}
+              Tree Planting Initiative
             </span>
           </div>
         </Link>

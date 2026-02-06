@@ -35,19 +35,19 @@ export function AdminNavbar() {
           <Link href="/admin" className="flex items-center gap-4 group">
             <div className="relative w-[180px] h-[50px] transition-all duration-500 group-hover:scale-105">
               <Image
-                src="/serena-logo.png"
-                alt="Serena"
+                src="/dtb-logo.png"
+                alt="DTB Kenya"
                 fill
                 className="object-contain"
                 priority
               />
             </div>
-            <div className="flex flex-col border-l border-[#115e59]/20 pl-4">
-              <span className="text-[#115e59] text-lg font-serif font-bold tracking-wide leading-none">
+            <div className="flex flex-col border-l border-[#F67910]/20 pl-4">
+              <span className="text-[#F67910] text-lg font-serif font-bold tracking-wide leading-none">
                 ADMIN PANEL
               </span>
-              <span className="text-[#b08d4b] text-[10px] uppercase tracking-[0.3em] font-medium mt-1">
-                Serena Green
+              <span className="text-[#7959EF] text-[10px] uppercase tracking-[0.3em] font-medium mt-1">
+                DTB Kenya
               </span>
             </div>
           </Link>
@@ -90,7 +90,7 @@ export function AdminNavbar() {
             { label: 'System', items: [
               { href: '/admin/users', label: 'User Management' },
               { href: '/admin/category-summaries', label: 'Category Summaries' },
-              { href: '/admin/data-migration', label: 'Data Migration' },
+              // { href: '/admin/data-migration', label: 'Data Migration' },
             ]},
           ].map((group) => (
             <div key={group.label} className="relative group/nav flex-shrink-0">
@@ -117,14 +117,14 @@ export function AdminNavbar() {
         {/* Right Actions: Search & User */}
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* Search */}
-          <div className="relative hidden lg:block">
+          {/* <div className="relative hidden lg:block">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#115e59]/40" />
             <input
               type="text"
               placeholder="Search..."
               className="pl-10 pr-4 py-2.5 text-xs bg-white/80 border border-[#115e59]/10 rounded-full focus:outline-none focus:ring-2 focus:ring-[#b08d4b]/20 focus:border-[#b08d4b]/30 w-48 xl:w-56 transition-all duration-300 placeholder:text-[#115e59]/40"
             />
-          </div>
+          </div> */}
 
           {/* Dashboard Link */}
           <Link
@@ -161,7 +161,7 @@ export function AdminNavbar() {
                     {user?.name || 'Super Admin'}
                   </p>
                   <p className="text-[10px] text-[#b08d4b] truncate">
-                    {user?.email || 'admin@serena.com'}
+                    {user?.email || 'admin@dtbkenya.com'}
                   </p>
                 </div>
                 <Link
@@ -233,7 +233,7 @@ export function AdminNavbar() {
               { label: 'System', items: [
                 { href: '/admin/users', label: 'User Management' },
                 { href: '/admin/category-summaries', label: 'Category Summaries' },
-                { href: '/admin/data-migration', label: 'Data Migration' },
+                // { href: '/admin/data-migration', label: 'Data Migration' },
               ]},
             ].map((group) => (
               <div key={group.label} className="py-2 border-t border-[#115e59]/10">

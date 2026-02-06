@@ -48,9 +48,11 @@ export default function CategorySummaryDisplay({
           className="bg-gradient-to-br from-white to-stone-50/30 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
         >
           <div className="p-8">
+            {/* Old Serena: text-[#115e59] */}
             {summary.title && (
-              <h3 className="text-2xl font-serif font-bold text-[#115e59] mb-4 flex items-center gap-3">
-                <span className="w-1 h-8 bg-[#b08d4b] rounded-full"></span>
+              <h3 className="text-2xl font-serif font-bold text-[#0f3f3c] mb-4 flex items-center gap-3">
+                {/* Old: bg-[#b08d4b] */}
+                <span className="w-1 h-8 bg-[#e5003a] rounded-full"></span>
                 {summary.title}
               </h3>
             )}

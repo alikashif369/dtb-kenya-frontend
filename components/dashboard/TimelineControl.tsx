@@ -24,9 +24,11 @@ export default function TimelineControl({
     return null;
   }
 
+  // Old Serena: bg-[#0f3f3c]/95 border-[#115e59]
   return (
-    <div className="bg-[#0f3f3c]/95 backdrop-blur-md rounded-full shadow-xl border border-[#115e59] px-4 py-2 inline-flex items-center gap-2">
-      <span className="text-[10px] font-bold text-[#b08d4b] uppercase tracking-[0.15em] px-1">
+    <div className="bg-[#0f3f3c]/95 backdrop-blur-md rounded-full shadow-xl border border-[#e5003a] px-4 py-2 inline-flex items-center gap-2">
+      {/* Old Serena Gold: text-[#b08d4b] */}
+      <span className="text-[10px] font-bold text-[#e5003a] uppercase tracking-[0.15em] px-1">
         Timeline
       </span>
 
@@ -54,9 +56,10 @@ export default function TimelineControl({
             >
               <span className="relative z-10">{year}</span>
               {isSelected && (
+                /* Old Serena Gold: bg-[#b08d4b] */
                 <motion.div
                   layoutId="yearIndicator"
-                  className="absolute inset-0 bg-[#b08d4b] rounded-full"
+                  className="absolute inset-0 bg-[#e5003a] rounded-full"
                   transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -65,8 +68,9 @@ export default function TimelineControl({
         })}
       </div>
 
+      {/* Old Serena Gold: border-[#b08d4b] */}
       {loading && (
-        <div className="w-3.5 h-3.5 ml-2 rounded-full border-2 border-[#b08d4b] border-t-transparent animate-spin" />
+        <div className="w-3.5 h-3.5 ml-2 rounded-full border-2 border-[#e5003a] border-t-transparent animate-spin" />
       )}
     </div>
   );

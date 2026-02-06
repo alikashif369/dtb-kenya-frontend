@@ -4,13 +4,25 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Serena Premium Palette - Light Mode Optimized */
-  --color-serena-green: #115e59; /* Deep Teal/Green - WCAG AAA on white */
-  --color-serena-green-dark: #0f3f3c; /* Darker variant */
-  --color-serena-gold: #b08d4b; /* Darkened Gold for better contrast on white */
-  --color-serena-sand: #f8f6f1; /* Warm Off-White Background */
-  --color-serena-text: #171717; /* Very dark grey for primary text */
-  --color-serena-muted: #525252; /* Dark grey for secondary text */
+  /* DTB Kenya Palette - Light Mode Optimized */
+  --color-dtb-primary: #F67910; /* Orange - DTB Primary */
+  --color-dtb-primary-dark: #d66a0e; /* Darker Orange variant */
+  --color-dtb-secondary: #7959EF; /* Purple - DTB Secondary */
+  --color-dtb-sand: #f8f6f1; /* Warm Off-White Background */
+  --color-dtb-text: #171717; /* Very dark grey for primary text */
+  --color-dtb-muted: #525252; /* Dark grey for secondary text */
+
+  /* Legacy aliases (keeping for compatibility - will update components) */
+  /* --color-serena-green: #115e59; */
+  /* --color-serena-green-dark: #0f3f3c; */
+  /* --color-serena-gold: #b08d4b; */
+  --color-serena-green: #115e59; /* Keep green - user approved */
+  --color-serena-green-dark: #0f3f3c; /* Keep dark green */
+  /* --color-serena-gold: #F67910; */ /* Old: DTB Orange */
+  --color-serena-gold: #e5003a; /* DTB Red - primary brand color */
+  --color-serena-sand: #f8f6f1; /* Keep same */
+  --color-serena-text: #171717; /* Keep same */
+  --color-serena-muted: #525252; /* Keep same */
 }
 
 /* Enforcing Light Mode: Removing automatic dark mode switch */
@@ -36,6 +48,15 @@ html.dark {
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  /* Register custom colors for Tailwind utility classes */
+  /* --color-serena-gold: #F67910; */ /* Old: DTB Orange */
+  --color-serena-gold: #e5003a; /* DTB Red - primary brand color */
+  --color-serena-green: #115e59; /* Keep green - user approved */
+  --color-serena-green-dark: #0f3f3c; /* Keep dark green */
+  --color-serena-sand: #f8f6f1;
+  --color-serena-text: #171717;
+  --color-serena-muted: #525252;
 }
 
 @keyframes partnerSlide {
@@ -76,13 +97,13 @@ body {
 
 /* Custom text selection colors */
 ::selection {
-  background-color: var(--color-serena-green); /* Deep Teal/Green background */
-  color: var(--color-serena-sand); /* Warm Off-White text */
+  background-color: var(--color-dtb-primary); /* DTB Orange background */
+  color: var(--color-dtb-sand); /* Warm Off-White text */
 }
 
 ::-moz-selection {
-  background-color: var(--color-serena-green); /* Deep Teal/Green background */
-  color: var(--color-serena-sand); /* Warm Off-White text */
+  background-color: var(--color-dtb-primary); /* DTB Orange background */
+  color: var(--color-dtb-sand); /* Warm Off-White text */
 }
 
 /* Dashboard-specific styles */
@@ -167,7 +188,7 @@ If you were using a div for the overlay, you'd use:
 .species-pagination .swiper-pagination-bullet {
   width: 8px;
   height: 8px;
-  background: var(--color-serena-green);
+  background: var(--color-serena-green); /* Green */
   opacity: 0.25;
   border-radius: 50%;
   transition: all 0.3s ease;
@@ -178,5 +199,5 @@ If you were using a div for the overlay, you'd use:
   opacity: 1;
   width: 24px;
   border-radius: 4px;
-  background: var(--color-serena-gold);
+  background: var(--color-serena-gold); /* DTB Orange */
 }

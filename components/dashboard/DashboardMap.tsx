@@ -91,18 +91,20 @@ export default function DashboardMap({
       const colors = isSatellite
         ? {
             fill: isSelected
-              ? "rgba(176, 141, 75, 0.4)" // Serena Gold
+              // Old: "rgba(176, 141, 75, 0.4)" - Serena Gold
+              ? "rgba(229, 0, 58, 0.4)" // DTB Red
               : "rgba(255, 255, 255, 0.15)", // Subtle white
-            stroke: isSelected ? "#b08d4b" : "#ffffff",
+            // Old: stroke: isSelected ? "#b08d4b" : "#ffffff"
+            stroke: isSelected ? "#e5003a" : "#ffffff",
             textFill: "#ffffff",
             textStroke: "#000000",
           }
         : {
             fill: isSelected
-              ? "rgba(17, 94, 89, 0.5)" // Serena Green
-              : "rgba(17, 94, 89, 0.2)",
-            stroke: isSelected ? "#115e59" : "#0f3f3c",
-            textFill: "#115e59",
+              ? "rgba(15, 63, 60, 0.5)" // DTB Dark
+              : "rgba(15, 63, 60, 0.2)",
+            stroke: isSelected ? "#0f3f3c" : "#0f3f3c",
+            textFill: "#0f3f3c",
             textStroke: "#ffffff",
           };
 
@@ -190,8 +192,10 @@ export default function DashboardMap({
         vectorLayer,
       ],
       view: new View({
-        center: fromLonLat([73.0, 33.5]),
-        zoom: 6,
+        // Old Pakistan center: fromLonLat([73.0, 33.5]), zoom: 6
+        // Kenya (Bungoma County area): approximately 34.5° E, 0.5° N
+        center: fromLonLat([34.5, 0.5]),
+        zoom: 9,
         minZoom: 4,
         maxZoom: 19,
       }),

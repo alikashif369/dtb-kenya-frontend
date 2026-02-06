@@ -61,7 +61,7 @@ function LayerItem({
         ${disabled ? "opacity-40 cursor-not-allowed border-transparent" : "cursor-pointer"}
         ${
           active
-            ? "bg-[#115e59] border-[#b08d4b] shadow-lg shadow-[#115e59]/20"
+            ? "bg-[#0f3f3c] border-[#e5003a] shadow-lg shadow-[#0f3f3c]/20"
             : "bg-white/5 hover:bg-white/10 border-transparent hover:border-white/10"
         }
       `}
@@ -79,7 +79,7 @@ function LayerItem({
         {active && (
           <motion.div
             layoutId={`indicator-${label}`}
-            className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-[#115e59]"
+            className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-[#0f3f3c]"
             style={{ backgroundColor: color }}
           />
         )}
@@ -134,7 +134,7 @@ function BaseLayerOption({
         transition-all duration-300 overflow-hidden border
         ${
           isActive
-            ? "bg-[#115e59]/40 border-[#b08d4b]"
+            ? "bg-[#0f3f3c]/40 border-[#e5003a]"
             : "bg-white/5 hover:bg-white/10 border-transparent"
         }
       `}
@@ -151,7 +151,7 @@ function BaseLayerOption({
       <div
         className={`
           relative w-10 h-10 rounded-lg flex items-center justify-center
-          ${isActive ? "bg-[#115e59] text-white" : "bg-white/5 text-gray-400"}
+          ${isActive ? "bg-[#0f3f3c] text-white" : "bg-white/5 text-gray-400"}
         `}
       >
         {icon}
@@ -171,7 +171,7 @@ function BaseLayerOption({
       {isActive && (
         <motion.div
           layoutId="baseLayerIndicator"
-          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#b08d4b]"
+          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#e5003a]"
         />
       )}
     </motion.button>
@@ -209,14 +209,14 @@ export default function LayerPanel({
           className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors group"
         >
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#115e59] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 h-10 rounded-xl bg-[#0f3f3c] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
               <Layers className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
               <div className="text-sm font-serif font-bold text-white tracking-wide">
                 Map Layers
               </div>
-              <div className="text-[10px] font-medium text-[#b08d4b] uppercase tracking-wider">
+              <div className="text-[10px] font-medium text-[#e5003a] uppercase tracking-wider">
                 {[showVectors, showImagery, showClassified].filter(Boolean)
                   .length + 1}{" "}
                 active
@@ -250,7 +250,7 @@ export default function LayerPanel({
                       flex-1 py-2 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all
                       ${
                         activeSection === "base"
-                          ? "bg-[#115e59] text-white shadow-sm"
+                          ? "bg-[#0f3f3c] text-white shadow-sm"
                           : "text-gray-400 hover:text-white hover:bg-white/5"
                       }
                     `}
@@ -263,7 +263,7 @@ export default function LayerPanel({
                       flex-1 py-2 px-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all
                       ${
                         activeSection === "overlays"
-                          ? "bg-[#115e59] text-white shadow-sm"
+                          ? "bg-[#0f3f3c] text-white shadow-sm"
                           : "text-gray-400 hover:text-white hover:bg-white/5"
                       }
                     `}
@@ -322,7 +322,7 @@ export default function LayerPanel({
                       icon={<Scan className="w-5 h-5" />}
                       label="Site Boundaries"
                       description="Vector polygon outlines"
-                      color="#b08d4b"
+                      color="#e5003a"
                     />
 
                     <LayerItem
@@ -355,8 +355,8 @@ export default function LayerPanel({
 
                     {/* Loading indicator */}
                     {loading && (
-                      <div className="flex items-center justify-center gap-2 py-3 text-[#b08d4b]">
-                        <div className="w-4 h-4 rounded-full border-2 border-[#b08d4b] border-t-transparent animate-spin" />
+                      <div className="flex items-center justify-center gap-2 py-3 text-[#e5003a]">
+                        <div className="w-4 h-4 rounded-full border-2 border-[#e5003a] border-t-transparent animate-spin" />
                         <span className="text-xs font-bold uppercase tracking-wider">Loading layers...</span>
                       </div>
                     )}
@@ -369,12 +369,12 @@ export default function LayerPanel({
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="mx-4 mb-4 p-4 rounded-xl bg-[#b08d4b]/10 border border-[#b08d4b]/20"
+                  className="mx-4 mb-4 p-4 rounded-xl bg-[#e5003a]/10 border border-[#e5003a]/20"
                 >
                   <div className="flex items-start gap-3">
-                    <Sparkles className="w-4 h-4 text-[#b08d4b] mt-0.5 flex-shrink-0" />
+                    <Sparkles className="w-4 h-4 text-[#e5003a] mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-bold text-[#b08d4b] uppercase tracking-wide">
+                      <div className="text-xs font-bold text-[#e5003a] uppercase tracking-wide">
                         Select a site
                       </div>
                       <div className="text-[11px] text-gray-400 mt-1 leading-relaxed">
@@ -397,7 +397,7 @@ export default function LayerPanel({
           animate={{ opacity: 1, y: 0 }}
           className="mt-4 bg-[#0f3f3c]/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl p-4"
         >
-          <div className="text-[10px] font-bold text-[#b08d4b] uppercase tracking-[0.2em] mb-3">
+          <div className="text-[10px] font-bold text-[#e5003a] uppercase tracking-[0.2em] mb-3">
             Classification Legend
           </div>
           <div className="space-y-2">

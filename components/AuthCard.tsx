@@ -32,7 +32,7 @@ export default function AuthCard() {
     <section className="min-h-screen w-full flex items-center justify-center bg-[#F9F8F6] relative overflow-hidden p-4">
       {/* Subtle Background Decorations */}
       <div className="absolute top-0 left-0 w-full h-96 bg-green-950/[0.03] -skew-y-6 transform -translate-y-24 z-0 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-full h-96 bg-serena-gold/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-full h-96 bg-[#F67910]/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -44,20 +44,20 @@ export default function AuthCard() {
           {/* Header */}
           <div className="text-center mb-8">
             <Image
-              src="/serena-logo.png"
-              alt="Serena Green"
+              src="/dtb-logo.png"
+              alt="DTB Kenya"
               width={64}
               height={64}
               className="mx-auto mb-5"
             />
             <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="h-[1px] w-6 bg-serena-gold" />
-              <span className="text-serena-gold text-[10px] font-bold uppercase tracking-[0.2em]">
+              <div className="h-[1px] w-6 bg-[#F67910]" />
+              <span className="text-[#F67910] text-[10px] font-bold uppercase tracking-[0.2em]">
                 Admin Portal
               </span>
-              <div className="h-[1px] w-6 bg-serena-gold" />
+              <div className="h-[1px] w-6 bg-[#F67910]" />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-green-950 mb-2">
+            <h1 className="text-2xl font-serif font-bold text-[#0f3f3c] mb-2">
               Welcome Back
             </h1>
             <p className="text-gray-500 text-sm">
@@ -80,12 +80,12 @@ export default function AuthCard() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-xs font-bold text-green-950 uppercase tracking-wider mb-2">
+              <label htmlFor="email" className="block text-xs font-bold text-[#0f3f3c] uppercase tracking-wider mb-2">
                 Email Address
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-4 w-4 text-gray-400 group-focus-within:text-serena-gold transition-colors" />
+                  <FaEnvelope className="h-4 w-4 text-gray-400 group-focus-within:text-[#F67910] transition-colors" />
                 </div>
                 <input
                   id="email"
@@ -97,19 +97,19 @@ export default function AuthCard() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
                   className="block w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-lg text-green-950 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-950/10 focus:border-green-950 transition-all disabled:opacity-50"
-                  placeholder="admin@serenahotels.com"
+                  placeholder="admin@dtbkenya.com"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-xs font-bold text-green-950 uppercase tracking-wider mb-2">
+              <label htmlFor="password" className="block text-xs font-bold text-[#0f3f3c] uppercase tracking-wider mb-2">
                 Password
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-4 w-4 text-gray-400 group-focus-within:text-serena-gold transition-colors" />
+                  <FaLock className="h-4 w-4 text-gray-400 group-focus-within:text-[#F67910] transition-colors" />
                 </div>
                 <input
                   id="password"

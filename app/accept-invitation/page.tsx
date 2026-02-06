@@ -128,14 +128,14 @@ function AcceptInvitationContent() {
     return (
       <section className="min-h-screen w-full flex items-center justify-center bg-[#F9F8F6] relative overflow-hidden p-6">
         <div className="absolute top-0 left-0 w-full h-96 bg-green-950/[0.03] -skew-y-6 transform -translate-y-24 z-0 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-full h-96 bg-serena-gold/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-full h-96 bg-[#F67910]/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
 
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-xl p-10 text-center border border-gray-100"
         >
-            <Image src="/serena-logo.png" alt="Serena Green" width={48} height={48} className="mx-auto mb-6" />
+            <Image src="/dtb-logo.png" alt="DTB Kenya" width={48} height={48} className="mx-auto mb-6" />
             <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-red-50 flex items-center justify-center">
               <FaExclamationTriangle className="w-8 h-8 text-red-500" />
             </div>
@@ -158,14 +158,14 @@ function AcceptInvitationContent() {
     return (
       <section className="min-h-screen w-full flex items-center justify-center bg-[#F9F8F6] relative overflow-hidden p-6">
         <div className="absolute top-0 left-0 w-full h-96 bg-green-950/[0.03] -skew-y-6 transform -translate-y-24 z-0 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-full h-96 bg-serena-gold/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-full h-96 bg-[#F67910]/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
 
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-xl p-10 text-center border border-gray-100"
         >
-            <Image src="/serena-logo.png" alt="Serena Green" width={48} height={48} className="mx-auto mb-6" />
+            <Image src="/dtb-logo.png" alt="DTB Kenya" width={48} height={48} className="mx-auto mb-6" />
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -200,7 +200,7 @@ function AcceptInvitationContent() {
     <section className="min-h-screen w-full flex items-center justify-center bg-[#F9F8F6] relative overflow-hidden p-6">
       {/* Background Decorations */}
       <div className="absolute top-0 left-0 w-full h-96 bg-green-950/[0.03] -skew-y-6 transform -translate-y-24 z-0 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-full h-96 bg-serena-gold/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none" />
+      <div className=\"absolute bottom-0 right-0 w-full h-96 bg-[#F67910]/[0.03] skew-y-6 transform translate-y-24 z-0 pointer-events-none\" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -210,15 +210,15 @@ function AcceptInvitationContent() {
       >
         <div className="p-8 md:p-10">
           <div className="text-center mb-8">
-            <Image src="/serena-logo.png" alt="Serena Green" width={64} height={64} className="mx-auto mb-5" />
+            <Image src="/dtb-logo.png" alt="DTB Kenya" width={64} height={64} className="mx-auto mb-5" />
             <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="h-[1px] w-6 bg-serena-gold" />
-              <span className="text-serena-gold text-[10px] font-bold uppercase tracking-[0.2em]">
+              <div className="h-[1px] w-6 bg-[#F67910]" />
+              <span className="text-[#F67910] text-[10px] font-bold uppercase tracking-[0.2em]">
                 Welcome
               </span>
-              <div className="h-[1px] w-6 bg-serena-gold" />
+              <div className="h-[1px] w-6 bg-[#F67910]" />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-green-950 mb-2">Create Account</h1>
+            <h1 className="text-2xl font-serif font-bold text-[#0f3f3c] mb-2">Create Account</h1>
             <p className="text-gray-500 text-sm">Set up your admin credentials</p>
           </div>
 
@@ -251,7 +251,7 @@ function AcceptInvitationContent() {
               <label className="block text-xs font-bold text-green-950 uppercase tracking-wider mb-2">Full Name</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaUser className="h-4 w-4 text-gray-400 group-focus-within:text-serena-gold transition-colors" />
+                  <FaUser className=\"h-4 w-4 text-gray-400 group-focus-within:text-[#F67910] transition-colors\" />
                 </div>
                 <input
                   type="text"
@@ -270,7 +270,7 @@ function AcceptInvitationContent() {
               <label className="block text-xs font-bold text-green-950 uppercase tracking-wider mb-2">Password</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-4 w-4 text-gray-400 group-focus-within:text-serena-gold transition-colors" />
+                  <FaLock className=\"h-4 w-4 text-gray-400 group-focus-within:text-[#F67910] transition-colors\" />
                 </div>
                 <input
                   type="password"
@@ -306,7 +306,7 @@ function AcceptInvitationContent() {
               <label className="block text-xs font-bold text-green-950 uppercase tracking-wider mb-2">Confirm Password</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-4 w-4 text-gray-400 group-focus-within:text-serena-gold transition-colors" />
+                  <FaLock className=\"h-4 w-4 text-gray-400 group-focus-within:text-[#F67910] transition-colors\" />
                 </div>
                 <input
                   type="password"

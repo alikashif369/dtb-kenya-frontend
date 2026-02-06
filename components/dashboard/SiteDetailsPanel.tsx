@@ -117,7 +117,7 @@ function QuickStatCard({
 // Render category-specific quick stats
 function renderQuickStats(site: Site, species: SiteSpecies[], photos: Photo[], selectedYear?: number | null) {
   const categoryType = site.category?.type as CategoryType;
-  const categoryColor = site.category?.type ? getCategoryColor(site.category.type) : "#115e59";
+  const categoryColor = site.category?.type ? getCategoryColor(site.category.type) : "#0f3f3c";
 
   // Solar-specific stats
   if (categoryType === "SOLAR") {
@@ -365,7 +365,7 @@ export default function SiteDetailsPanel({
 
   const categoryColor = site.category?.type
     ? getCategoryColor(site.category.type)
-    : "#115e59";
+    : "#0f3f3c";
 
   return (
     <AnimatePresence mode="wait">

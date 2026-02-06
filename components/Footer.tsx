@@ -12,9 +12,11 @@ export default function Footer() {
           
           {/* Brand & Socials */}
           <div className="space-y-4">
-            <h2 className="text-xl font-serif text-white tracking-wide">SERENA<span className="text-serena-gold">.</span></h2>
+            {/* Old: SERENA<span className="text-serena-gold">.</span> */}
+            <h2 className="text-xl font-serif text-white tracking-wide">DTB KENYA<span className="text-serena-gold">.</span></h2>
             <p className="leading-relaxed max-w-xs text-xs">
-              Pioneering sustainable tourism and environmental stewardship across the region.
+              {/* Pioneering sustainable tourism and environmental stewardship across the region. */}
+              Empowering schools and communities through tree planting initiatives across Kenya.
             </p>
             <div className="flex gap-4 pt-2">
                {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
@@ -39,16 +41,18 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Contact</h3>
              <ul className="space-y-2">
-              <li>Islamabad, Pakistan</li>
-              <li>+92 51 287 6161</li>
-              <li><a href="mailto:green@serenahotels.com" className="hover:text-serena-gold transition-colors">green@serenahotels.com</a></li>
+              {/* Old: Islamabad, Pakistan / +92 51 287 6161 / green@serenahotels.com */}
+              <li>Nairobi, Kenya</li>
+              <li>+254 XXX XXX XXX</li>
+              <li><a href="mailto:info@dtbkenya.com" className="hover:text-serena-gold transition-colors">info@dtbkenya.com</a></li>
              </ul>
           </div>
 
           {/* Newsletter */}
           <div>
             <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-4">Newsletter</h3>
-            <p className="text-xs mb-4">Latest updates on our green initiatives.</p>
+            {/* Old: Latest updates on our green initiatives. */}
+            <p className="text-xs mb-4">Latest updates on our tree planting initiatives.</p>
             <div className="flex border-b border-white/20 pb-1 focus-within:border-serena-gold transition-colors">
               <input 
                 type="email" 
@@ -65,7 +69,8 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
-           <p>© 2026 Serena Green. All Rights Reserved.</p>
+           {/* Old: © 2026 Serena Green. All Rights Reserved. */}
+           <p>© 2026 DTB Kenya. All Rights Reserved.</p>
            <div className="flex gap-6 mt-2 md:mt-0">
              <Link href="#" className="hover:text-gray-400">Privacy Policy</Link>
              <Link href="#" className="hover:text-gray-400">Terms of Use</Link>

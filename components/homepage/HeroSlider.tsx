@@ -16,21 +16,41 @@ import 'swiper/css/pagination';
 const slides = [
   {
     id: 1,
-    image: "/bg-main.jpg", 
-    title: "Preserving Nature for Future Generations",
-    subtitle: "Serena Hotels' unwavering commitment to environmental stewardship through reforestation, renewable energy, and community engagement.",
+    image: "/bg-main.jpg",
+    title: "Growing a Greener Kenya Together",
+    subtitle: "Diamond Trust Bank's commitment to environmental sustainability through school tree planting programs across Kenya.",
     cta: "Explore Our Impact",
     link: "#impact"
   },
   {
     id: 2,
     image: "/bg-main.jpg",
-    title: "A Greener Tomorrow, Today",
-    subtitle: "Leading the way in sustainable tourism across Pakistan's most breathtaking landscapes.",
+    title: "Planting Seeds of Change",
+    subtitle: "Empowering Kenyan schools and communities with trees for a sustainable future.",
     cta: "View Our Sites",
     link: "/dashboard"
   }
 ];
+
+// Old Serena slides (commented out):
+// const slides = [
+//   {
+//     id: 1,
+//     image: "/bg-main.jpg",
+//     title: "Preserving Nature for Future Generations",
+//     subtitle: "Serena Hotels' unwavering commitment to environmental stewardship through reforestation, renewable energy, and community engagement.",
+//     cta: "Explore Our Impact",
+//     link: "#impact"
+//   },
+//   {
+//     id: 2,
+//     image: "/bg-main.jpg",
+//     title: "A Greener Tomorrow, Today",
+//     subtitle: "Leading the way in sustainable tourism across Pakistan's most breathtaking landscapes.",
+//     cta: "View Our Sites",
+//     link: "/dashboard"
+//   }
+// ];
 
 export default function HeroSlider() {
   return (
@@ -81,7 +101,8 @@ export default function HeroSlider() {
                     >
                         <div className="h-[1px] w-20 bg-serena-gold" />
                         <span className="text-serena-gold text-sm md:text-base font-bold uppercase tracking-[0.4em]">
-                        Serena Environmental Initiative
+                        {/* Serena Environmental Initiative */}
+                        DTB Tree Planting Initiative
                         </span>
                     </motion.div>
                     
@@ -91,7 +112,9 @@ export default function HeroSlider() {
                     transition={{ duration: 0.8, delay: 0.5 }}
                     className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[1.1] mb-8 text-green-950"
                     >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-yellow-800">
+                    {/* Old: yellow gradient */}
+                    {/* <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-yellow-800"> */}
+                    <span className="text-serena-gold">
                         {slide.title.split(" ").slice(0, 1)}
                     </span> {slide.title.split(" ").slice(1).join(" ")}
                     </motion.h1>

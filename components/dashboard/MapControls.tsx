@@ -57,8 +57,9 @@ function ControlButton({
           relative w-11 h-11 rounded-full flex items-center justify-center
           border transition-all duration-300 shadow-sm
           ${disabled ? "opacity-40 cursor-not-allowed bg-stone-50 border-stone-200 text-stone-300" : ""}
-          ${!disabled && active ? "bg-[#115e59] text-white border-[#115e59] shadow-md shadow-[#115e59]/20" : ""}
-          ${!disabled && !active ? "bg-white border-gray-100 text-gray-500 hover:text-[#b08d4b] hover:border-[#b08d4b] hover:shadow-md" : ""}
+          {/* Old Serena: bg-[#115e59] border-[#115e59] shadow-[#115e59]/20 */}
+          ${!disabled && active ? "bg-[#0f3f3c] text-white border-[#0f3f3c] shadow-md shadow-[#0f3f3c]/20" : ""}
+          ${!disabled && !active ? "bg-white border-gray-100 text-gray-500 hover:text-[#e5003a] hover:border-[#e5003a] hover:shadow-md" : ""}
         `}
       >
         {active && activeIcon ? activeIcon : icon}
@@ -73,7 +74,8 @@ function ControlButton({
             exit={{ opacity: 0, x: 10 }}
             className="absolute right-full mr-3 top-1/2 -translate-y-1/2 z-50"
           >
-            <div className="bg-[#0f3f3c] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-lg whitespace-nowrap shadow-xl border border-[#b08d4b]/30">
+            {/* Old Serena Gold: border-[#b08d4b]/30 */}
+            <div className="bg-[#0f3f3c] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-lg whitespace-nowrap shadow-xl border border-[#e5003a]/30">
               {tooltip}
               {disabled && " (select a site)"}
             </div>

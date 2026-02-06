@@ -210,8 +210,8 @@ export default function DrawMap({
       layers: [baseLayer, allPolygonsLayer, rasterLayer, vectorLayer],
       controls: defaultControls({ zoom: false, attribution: false, rotate: false }),
       view: new View({
-        center: fromLonLat([73.0479, 33.6844]),
-        zoom: 12,
+        center: fromLonLat([37.9062, -0.0236]), // Kenya center coordinates
+        zoom: 6, // Zoom level to show Kenya
       }),
     });
     mapRef.current = map;

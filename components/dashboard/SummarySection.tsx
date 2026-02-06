@@ -155,7 +155,8 @@ export default function SummarySection({
                   {hasSingleSite ? "Deep-Dive Site Analytics" : "Ecosystem Performance Overview"}
                 </span>
               </div>
-              <h2 className="text-4xl md:text-6xl font-serif text-[#115e59] font-bold tracking-tight mb-4 leading-tight">
+              {/* Old Serena: text-[#115e59] */}
+              <h2 className="text-4xl md:text-6xl font-serif text-[#0f3f3c] font-bold tracking-tight mb-4 leading-tight">
                 {hasSingleSite ? selectedSite?.name : "Summary Overview"}
               </h2>
               {hasSingleSite && selectedSite && (
@@ -274,17 +275,34 @@ export default function SummarySection({
                 {isTopLevel ? (
                   // Default welcome text when no filters are selected
                   <div className="prose prose-stone max-w-none">
-                    <h3 className="text-2xl font-serif font-bold text-[#115e59] mb-6 flex items-center gap-3">
-                      <span className="w-1 h-8 bg-[#b08d4b] rounded-full"></span>
-                      Serena Green Initiative
+                    {/* Old Serena: text-[#115e59] */}
+                    <h3 className="text-2xl font-serif font-bold text-[#0f3f3c] mb-6 flex items-center gap-3">
+                      {/* Old: bg-[#b08d4b] */}
+                      <span className="w-1 h-8 bg-[#e5003a] rounded-full"></span>
+                      {/* Old: Serena Green Initiative */}
+                      DTB Kenya Tree Planting Initiative
                     </h3>
                     <div className="space-y-4 text-gray-700 leading-relaxed">
+                      {/* Old Serena text:
                       <p>
                         Serena Hotels continue to pledge in promoting clean and green Pakistan by focusing on climate change mitigation,
                         climate adaptation, land degradation, food security, biodiversity conservation, and enhancing community resilience.
                       </p>
+                      */}
+                      {/* ORG_TEXT_START */}
                       <p>
-                        Serena Green Initiative unites our Asia and Africa programs to restore ecosystems and cut operational emissions.
+                        DTB Kenya Tree Planting Initiative is dedicated to environmental sustainability through afforestation and community engagement. 
+                        By partnering with local schools and communities across Kenya, we aim to restore ecosystems, combat climate change, and 
+                        champion green stewardship. This platform provides real-time monitoring and transparency for our tree planting efforts, 
+                        ensuring long-term impact and accountability.
+                      </p>
+                      {/*
+                      <p>
+                        Diamond Trust Bank Kenya continues to champion environmental sustainability through strategic tree planting initiatives
+                        across schools in Bungoma County, focusing on climate change mitigation, ecosystem restoration, and community engagement.
+                      </p>
+                      <p>
+                        DTB Kenya Tree Planting Initiative brings together environmental stewardship and community development to restore ecosystems.
                         We focus on native tree planting and forest stewardship, water and soil conservation, and community-led stewardship
                         backed by transparent monitoring. In parallel, we advance clean-energy upgrades—like rooftop solar and efficiency
                         improvements—to support resilient, nature-positive hospitality across both regions.
@@ -298,6 +316,8 @@ export default function SummarySection({
                         Through collaboration and community involvement, this pilot project has the potential to serve as a model for other
                         afforestation efforts around the world. The project has been completed in August, 2023.
                       </p>
+                      */}
+                      {/* ORG_TEXT_END */}
                     </div>
                   </div>
                 ) : (
