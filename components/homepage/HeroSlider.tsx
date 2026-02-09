@@ -144,7 +144,7 @@ export default function HeroSlider() {
 
                         {/* Floating Glass Card (Live Stat) */}
                         <div className="hidden md:flex items-center gap-4 px-8 py-4 bg-white/60 backdrop-blur-md border border-green-950/10 rounded-none shadow-sm">
-                            <div className="text-3xl font-serif text-green-950">30+</div>
+                            <div className="text-3xl font-serif text-green-950">500+</div>
                             <div className="text-xs text-green-900 uppercase tracking-widest leading-tight">
                                 Active <br/> Sites
                             </div>
