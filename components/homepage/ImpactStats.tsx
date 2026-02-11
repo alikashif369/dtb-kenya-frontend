@@ -54,24 +54,39 @@ const StatItem = ({ icon: Icon, value, label, delay }: any) => {
 };
 
 export default function ImpactStats({ stats }: { stats: any }) {
+  // Calculate impact based on 1 million trees planted in Kenya
+  const treesPlanted = 1000000; // 1 million trees
+
+  // Formula: 1 tree absorbs ~22kg CO2/year, equivalent to ~0.012 MWh clean energy offset
+  // 1M trees = 12,000 MWh = 12 GWh
+  const energyGenerated = ((treesPlanted * 0.012) / 1000).toFixed(1); // in GWh
+
+  // Formula: 1 tree produces ~100kg organic matter/year (leaves, branches, soil improvement)
+  // 1M trees = 100,000,000 kg = 100,000 tons
+  const wasteRecycled = (treesPlanted * 100) / 1000; // in Tons
+
+  // Formula: 1 job per 100 trees (planting, maintenance) + 4 family members per worker
+  // (1M/100) * 5 = 50,000 lives impacted
+  const livesImpacted = ((treesPlanted / 100) * 5).toLocaleString();
+
   const data = {
-    treesPlanted: stats?.treesPlanted || "1.2M+",
-    energyGenerated: stats?.energyGenerated || "5.6GWh",
-    wasteRecycled: stats?.wasteRecycled || "850T",
-    livesImpacted: stats?.livesImpacted || "45,000"
+    treesPlanted: stats?.treesPlanted || "1M+",
+    energyGenerated: stats?.energyGenerated || `${energyGenerated}GWh`,
+    wasteRecycled: stats?.wasteRecycled || `${wasteRecycled.toLocaleString()}T`,
+    livesImpacted: stats?.livesImpacted || livesImpacted
   };
 
   return (
     <section id="impact" className="relative py-32 bg-serena-sand overflow-hidden">
       {/* Background Pattern/Texture Placeholder - Light Mode */}
       <div className="absolute inset-0 opacity-5 bg-[url('/bg-main.jpg')] bg-cover bg-fixed grayscale" />
-      
+
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <StatItem icon={TreePine} value={data.treesPlanted} label="Trees Planted" delay={0.1} />
-          <StatItem icon={Zap} value={data.energyGenerated} label="Clean Energy Generated" delay={0.2} />
-          <StatItem icon={Recycle} value={data.wasteRecycled} label="Waste Recycled" delay={0.3} />
-          <StatItem icon={Users} value={data.livesImpacted} label="Lives Impacted" delay={0.4} />
+          <StatItem icon={TreePine} value={data.treesPlanted} label="Trees Planted in Kenya" delay={0.1} />
+          <StatItem icon={Zap} value={data.energyGenerated} label="Clean Energy Equivalent" delay={0.2} />
+          <StatItem icon={Recycle} value={data.wasteRecycled} label="Organic Matter Produced" delay={0.3} />
+          <StatItem icon={Users} value={data.livesImpacted} label="Lives Impacted in Kenya" delay={0.4} />
         </div>
       </div>
     </section>

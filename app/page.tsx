@@ -13,12 +13,12 @@ import Footer from "@/components/Footer";
 // import PartnersSlider from "@/components/PartnersSlider";
 // const PartnersSliderComponent: any = PartnersSlider;
 
-// Mock data for DTB Kenya (update with real data from API)
+// Mock data for DTB Kenya - Based on 1 Million Trees Initiative
 const mockStats = {
-  treesPlanted: "500K+",
-  schoolsReached: "528+",
-  countiesServed: "1",
-  speciesPlanted: "6+",
+  treesPlanted: "1M+",
+  energyGenerated: "12.0GWh",
+  wasteRecycled: "100,000T",
+  livesImpacted: "50,000",
 };
 
 // COMMENTED OUT - No partners yet
