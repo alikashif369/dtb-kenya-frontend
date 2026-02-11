@@ -11,31 +11,31 @@ const impactItems = [
     id: 1,
     title: "Conservation",
     description: "Protecting biodiversity and restoring ecosystems across our regions.",
-    image: "/carousal_image_01.jpg"
+    image: "/impact/conservation.jpg.jpeg"
   },
   {
     id: 2,
     title: "Community",
     description: "Empowering local communities through sustainable livelihoods and education.",
-    image: "/carousal_image_01.jpg" 
+    image: "/impact/flora-1.jpg.jpeg"
   },
   {
     id: 3,
     title: "Flora",
     description: "Nurturing indigenous plant species for a greener, more resilient future.",
-    image: "/carousal_image_01.jpg"
+    image: "/impact/flora.jpg.jpeg"
   },
   {
     id: 4,
     title: "Culture",
     description: "Preserving heritage and promoting cultural understanding through tourism.",
-    image: "/carousal_image_01.jpg"
+    image: "/impact/culture.jpg.jpeg"
   },
   {
     id: 5,
     title: "Sustainability",
     description: "Reducing our carbon footprint through renewable energy and waste reduction.",
-    image: "/carousal_image_01.jpg"
+    image: "/impact/sustainability.jpg.jpeg"
   }
 ];
 
@@ -72,12 +72,12 @@ export default function ImpactCarousel() {
         {impactItems.map((item) => (
           <SwiperSlide key={item.id} className="cursor-pointer group">
              <div className="flex flex-col h-full pl-6 md:pl-0">
-                {/* Text Content - Top */}
-                <div className="mb-6 pr-8">
+                {/* Text Content - Top (fixed height so images align across cards) */}
+                <div className="mb-6 pr-8 min-h-[100px] flex flex-col justify-start">
                     <h3 className="text-2xl font-serif font-bold text-green-950 mb-3 group-hover:text-serena-gold transition-colors duration-300">
                         {item.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed text-sm">
+                    <p className="text-gray-600 leading-relaxed text-sm line-clamp-2">
                         {item.description}
                     </p>
                 </div>
