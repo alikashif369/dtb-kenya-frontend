@@ -94,7 +94,7 @@ const NAVIGATION_GROUPS: NavGroup[] = [
       { id: 'users', label: 'User Management', icon: <Users className="w-4 h-4" />, href: '/admin/users' },
       { id: 'aggregate-metrics', label: 'Aggregate Metrics', icon: <BarChart3 className="w-4 h-4" />, href: '/admin/aggregate-metrics' },
       { id: 'category-summaries', label: 'Category Summaries', icon: <FileText className="w-4 h-4" />, href: '/admin/category-summaries' },
-      { id: 'migration', label: 'Data Migration', icon: <Database className="w-4 h-4" />, href: '/admin/migration' },
+      // { id: 'migration', label: 'Data Migration', icon: <Database className="w-4 h-4" />, href: '/admin/migration' },
     ],
   },
 ];

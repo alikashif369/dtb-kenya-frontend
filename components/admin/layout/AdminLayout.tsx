@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     { label: 'System', items: [
                       { href: '/admin/users', label: 'User Management' },
                       { href: '/admin/category-summaries', label: 'Category Summaries' },
-                      { href: '/admin/data-migration', label: 'Data Migration' },
+                      // { href: '/admin/data-migration', label: 'Data Migration' },
                     ]},
                   ].map((group) => (
                     <div key={group.label} className="relative group/nav flex-shrink-0">
@@ -235,7 +235,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       { label: 'System', items: [
                         { href: '/admin/users', label: 'User Management' },
                         { href: '/admin/category-summaries', label: 'Category Summaries' },
-                        { href: '/admin/data-migration', label: 'Data Migration' },
+                        // { href: '/admin/data-migration', label: 'Data Migration' },
                       ]},
                     ].map((group) => (
                       <div key={group.label} className="py-2 border-t border-[#115e59]/10">

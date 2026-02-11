@@ -233,12 +233,12 @@ export default function AdminDashboard() {
             title="Category Summaries"
             description="Summary reports by category"
           />
-          <ModuleCard
+          {/* <ModuleCard
             href="/admin/migration"
             icon={<Settings className="w-5 h-5" />}
             title="Data Migration"
             description="Import and migrate data"
-          />
+          /> */}
         </ModuleSection>
       </motion.div>
     </motion.div>
